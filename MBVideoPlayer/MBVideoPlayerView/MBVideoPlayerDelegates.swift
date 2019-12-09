@@ -8,21 +8,31 @@
 
 import UIKit
 
+enum MBVideoPlayerState {
+    case readyToPlay
+    case playing
+    case pause
+    case playedToTheEnd
+    case error
+}
+
 // 1- MBVideoPlayerView
 
 protocol MBVideoPlayerViewDelegate: class {
-    func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView)
-    func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell?
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndex: IndexPath)
+    func mbPlayerView(_ playerView: MBVideoPlayerView, playerStateDidChange: MBVideoPlayerState)
+    func mbPlayerView(_ playerView: MBVideoPlayerView, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval)
+    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
+    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath)
     func mbPlayerView(_ playerView: MBVideoPlayerView, resizeAction dimension: PlayerDimension)
 }
 
 extension MBVideoPlayerViewDelegate {
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
+    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell? {
         return nil
     }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndex: IndexPath) { }
+    func mbPlayerView(_ playerView: MBVideoPlayerView, playerStateDidChange: MBVideoPlayerState) { }
+    func mbPlayerView(_ playerView: MBVideoPlayerView, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval) { }
+    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath) { }
     func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView) {}
     func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView) {}
 }
@@ -30,8 +40,8 @@ extension MBVideoPlayerViewDelegate {
 // 2- MBVideoPlayerControls
 
 protocol MBVideoPlayerControlsDelegate: class {
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell?
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndex: IndexPath)
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath indexPath: IndexPath)
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension)
 }
 

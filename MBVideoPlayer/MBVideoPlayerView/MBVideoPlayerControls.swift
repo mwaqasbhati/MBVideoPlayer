@@ -28,17 +28,10 @@ class MBVideoPlayerControls: UIView {
 
     private var isActive: Bool = false
 
-    var canShowVideoList = true
-    var canShowTime = true
-    var canShowPlayPause = true
-    var canShowTimeBar = true
-    var canShowFullScreenBtn = true
-    var canShowForwardBack = true
-
-    var dimension: PlayerDimension = .embed
     var delegate: MBVideoPlayerControlsDelegate?
     weak var videoPlayerView: MBVideoPlayerView?
-    
+    var configuration = MBConfiguration()
+
     private var topC: NSLayoutConstraint?
     private var bottomC: NSLayoutConstraint?
     private var rightC: NSLayoutConstraint?
@@ -58,18 +51,11 @@ class MBVideoPlayerControls: UIView {
 
     override init(frame: CGRect) {
       super.init(frame: frame)
-      addOverlay()
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        addOverlay()
     }
     
-    private func addOverlay() {
-        
-        
-        
-    }
     func setPlayList(_ items: [PlayerItem], videoPlayerView: MBVideoPlayerView) {
         playerItems = items
         self.videoPlayerView = videoPlayerView
@@ -85,27 +71,27 @@ class MBVideoPlayerControls: UIView {
         activityView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         activityView.startAnimating()
         
-        if canShowPlayPause {
+        if configuration.canShowPlayPause {
             addPlayPauseButton()
         }
         
-        if canShowForwardBack {
+        if configuration.canShowForwardBack {
             addForwardBackwardButton()
         }
         
-        if canShowTime {
+        if configuration.canShowTime {
             addTimeLabel()
         }
         
-        if canShowTimeBar {
+        if configuration.canShowTimeBar {
             addTimeBarWith(playerTimeLabel)
         }
         
-        if canShowFullScreenBtn {
+        if configuration.canShowFullScreenBtn {
             addResizeBtnWith(seekSlider)
         }
         
-        if canShowVideoList {
+        if configuration.canShowVideoList {
             addPlayList()
         }
 
@@ -154,7 +140,7 @@ class MBVideoPlayerControls: UIView {
     @objc func clickBackButton(_ sender: UIButton) {
         guard let totalDuration = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
-        var newTime = playerCurrentTime - (videoPlayerView?.seekDuration ?? 0)
+        var newTime = playerCurrentTime - configuration.seekDuration
 
         if newTime < 0 {
             newTime = 0
@@ -168,7 +154,7 @@ class MBVideoPlayerControls: UIView {
     @objc func clickForwardButton(_ sender: UIButton) {
         guard let totalDuration  = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
-        let newTime = playerCurrentTime + (videoPlayerView?.seekDuration ?? 0)
+        let newTime = playerCurrentTime + configuration.seekDuration
 
         if newTime < CMTimeGetSeconds(totalDuration) {
             let time2: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
@@ -179,12 +165,12 @@ class MBVideoPlayerControls: UIView {
     }
     
     @objc func resizeButtonTapped(_ sender:UIButton) {
-        delegate?.mbOverlayView(self, resizeAction: dimension)
+        delegate?.mbOverlayView(self, resizeAction: configuration.dimension)
 
-        switch dimension {
+        switch configuration.dimension {
         case .embed:
-            if let frame = videoPlayerView?.mainContainerView?.bounds {
-                delegate?.mbOverlayView(self, resizeAction: dimension)
+            if let _ = videoPlayerView?.mainContainerView?.bounds {
+                delegate?.mbOverlayView(self, resizeAction: configuration.dimension)
                 videosStackView.isHidden = false
                 if let view = videoPlayerView?.mainContainerView {
                    leftC = videoPlayerView?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
@@ -197,16 +183,16 @@ class MBVideoPlayerControls: UIView {
                     }
                 }
             }
-            resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
-            dimension = .fullScreen
+            resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
+            configuration.dimension = .fullScreen
         case .fullScreen:
             if let leftC = leftC, let rightC = rightC, let bottomC = bottomC, let topC = topC {
                 NSLayoutConstraint.deactivate([leftC, rightC, topC, bottomC])
                 layoutIfNeeded()
-                resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
+                resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
                 videosStackView.isHidden = true
             }
-            dimension = .embed
+            configuration.dimension = .embed
         }
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
@@ -217,7 +203,7 @@ class MBVideoPlayerControls: UIView {
         let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(resizeButton)
-        resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
+        resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
         if let slider = slider {
             resizeButton.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 10).isActive = true
@@ -348,10 +334,10 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.mbOverlayView(self, didSelectRowAtIndex: indexPath)
-       if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
-           //loadVideo(url)
-       }
+        delegate?.mbOverlayView(self, didSelectRowAtIndexPath: indexPath)
+        if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
+          videoPlayerView?.loadVideo(url)
+        }
     }
 }
 

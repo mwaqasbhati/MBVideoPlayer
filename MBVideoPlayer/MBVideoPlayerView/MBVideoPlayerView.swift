@@ -23,15 +23,13 @@ open class MBVideoPlayerView: UIView {
     private var isShowOverlay: Bool = true
     private var dimension: PlayerDimension = .embed
     private var task: DispatchWorkItem? = nil
+    private var queuePlayer: AVQueuePlayer!
+    private var playerLayer: AVPlayerLayer!
 
     let overlayView = MBVideoPlayerControls()
     var delegate: MBVideoPlayerViewDelegate?
-    private var queuePlayer: AVQueuePlayer!
-    private var playerLayer: AVPlayerLayer!
     var mainContainerView: UIView?
-    
-    let seekDuration: Float64 = 15.0
-        
+            
     var totalDuration: CMTime? {
         return self.queuePlayer.currentItem?.asset.duration
     }
@@ -120,7 +118,7 @@ open class MBVideoPlayerView: UIView {
         isShowOverlay = !isShowOverlay
     }
     
-    private func loadVideo(_ url: URL) {
+    func loadVideo(_ url: URL) {
         queuePlayer.removeAllItems()
         let playerItem = AVPlayerItem.init(url: url)
         queuePlayer.insert(playerItem, after: nil)
@@ -149,7 +147,7 @@ extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
         return delegate?.mbPlayerView(self, cellForRowAtIndexPath: cellForRowAtIndexPath)
     }
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndex: IndexPath) {
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath: IndexPath) {
         
     }
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension) {

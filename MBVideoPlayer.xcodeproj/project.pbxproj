@@ -21,6 +21,7 @@
 		46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */; };
 		46C44CE6239E1BC400793264 /* CMTime+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE5239E1BC400793264 /* CMTime+extension.swift */; };
 		46C44CE8239E1BFD00793264 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */; };
+		46C44CEA239E601300793264 /* MBConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE9239E601300793264 /* MBConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerDelegates.swift; sourceTree = "<group>"; };
 		46C44CE5239E1BC400793264 /* CMTime+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+extension.swift"; sourceTree = "<group>"; };
 		46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewCell.swift; sourceTree = "<group>"; };
+		46C44CE9239E601300793264 /* MBConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */,
 				46C44CE5239E1BC400793264 /* CMTime+extension.swift */,
 				46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */,
+				46C44CE9239E601300793264 /* MBConfiguration.swift */,
 			);
 			path = MBVideoPlayerView;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				2501099D239ABC2D0083F142 /* SceneDelegate.swift in Sources */,
 				46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */,
 				46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */,
+				46C44CEA239E601300793264 /* MBConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
