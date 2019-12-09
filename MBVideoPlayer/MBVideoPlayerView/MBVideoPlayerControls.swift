@@ -6,17 +6,16 @@
 //  Copyright © 2019 Muhammad Waqas. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import AVKit
 
-protocol MBVideoPlayerControlsDelegate: class {
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell?
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndex: IndexPath)
-}
 
 class MBVideoPlayerControls: UIView {
     
+    // MARK: - Constants
+
+    // MARK: - Instance Variables
+
     private var playButton: UIButton!
     private var backButton: UIButton!
     private var forwardButton: UIButton!
@@ -24,10 +23,8 @@ class MBVideoPlayerControls: UIView {
     private var playerTimeLabel: UILabel!
     private var seekSlider: UISlider!
     private var activityView = UIActivityIndicatorView(style: .large)
-    let videosStackView = UIStackView()
-    private var cellId = "videoCellId"
+    private let videosStackView = UIStackView()
     private var playerItems: [PlayerItem]?
-    private var isShowOverlay: Bool = true
 
     private var isActive: Bool = false
 
@@ -42,16 +39,14 @@ class MBVideoPlayerControls: UIView {
     var delegate: MBVideoPlayerControlsDelegate?
     weak var videoPlayerView: MBVideoPlayerView?
     
-    var queuePlayer: AVQueuePlayer! {
-        return videoPlayerView?.queuePlayer
-    }
-
     private var topC: NSLayoutConstraint?
     private var bottomC: NSLayoutConstraint?
     private var rightC: NSLayoutConstraint?
     private var leftC: NSLayoutConstraint?
 
-    lazy var collectionView: UICollectionView =  {
+    private var cellId = "videoCellId"
+
+    private lazy var collectionView: UICollectionView =  {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 100, height: 100)
         layout.scrollDirection = .horizontal
@@ -84,7 +79,7 @@ class MBVideoPlayerControls: UIView {
         
         // activity indicator
         activityView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(activityView)
+        addSubview(activityView)
         activityView.color = .white
         activityView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         activityView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
@@ -117,7 +112,13 @@ class MBVideoPlayerControls: UIView {
         
         
     }
-    
+    func videoDidStart() {
+        playerTimeLabel.text = CMTime.zero.description
+        seekSlider.value = 0.0
+    }
+    func videoDidChange(_ time: CMTime) {
+        playerTimeLabel.text = time.description
+    }
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
             let oldStatus = AVPlayer.TimeControlStatus(rawValue: oldValue)
@@ -137,59 +138,55 @@ class MBVideoPlayerControls: UIView {
     // MARK: - Actions
     
     @objc func changeSeekSlider(_ sender: UISlider) {
-        guard let duration = videoPlayerView?.duration else { return }
-        let seekTime = CMTime(seconds: Double(sender.value) * duration.asDouble, preferredTimescale: 100)
+        guard let totalDuration = videoPlayerView?.totalDuration else { return }
+        let seekTime = CMTime(seconds: Double(sender.value) * totalDuration.asDouble, preferredTimescale: 100)
+        playerTimeLabel.text = seekTime.description
         self.videoPlayerView?.seekToTime(seekTime)
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
-        playButton.setImage(UIImage(systemName: isActive ? "play.fill" : "pause.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
-        isActive ? queuePlayer.pause() : queuePlayer.play()
-        self.isActive = !self.isActive
+        playButton.setImage(Controls.playpause(isActive).image, for: .normal)
+        videoPlayerView?.playPause(isActive)
+        isActive = !isActive
         print("clicked -> \(isActive)")
     }
     
     @objc func clickBackButton(_ sender: UIButton) {
-        let playerCurrentTime = CMTimeGetSeconds(queuePlayer.currentTime())
+        guard let totalDuration = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
+        let playerCurrentTime = CMTimeGetSeconds(current)
         var newTime = playerCurrentTime - (videoPlayerView?.seekDuration ?? 0)
 
         if newTime < 0 {
             newTime = 0
         }
         let time2: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
-        queuePlayer.seek(to: time2)
+        videoPlayerView?.seekToTime(time2)
         playerTimeLabel.text = time2.description
-        guard let duration = videoPlayerView?.duration else { return }
-        seekSlider.value = time2.asFloat / duration.asFloat
+        seekSlider.value = time2.asFloat / totalDuration.asFloat
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
-        guard let duration  = queuePlayer.currentItem?.duration else{
-            return
-        }
-        let playerCurrentTime = CMTimeGetSeconds(queuePlayer.currentTime())
+        guard let totalDuration  = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
+        let playerCurrentTime = CMTimeGetSeconds(current)
         let newTime = playerCurrentTime + (videoPlayerView?.seekDuration ?? 0)
 
-        if newTime < CMTimeGetSeconds(duration) {
-
+        if newTime < CMTimeGetSeconds(totalDuration) {
             let time2: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
-            queuePlayer.seek(to: time2)
-            
+            videoPlayerView?.seekToTime(time2)
             playerTimeLabel.text = time2.description
-            seekSlider.value = time2.asFloat / duration.asFloat
+            seekSlider.value = time2.asFloat / totalDuration.asFloat
         }
     }
     
     @objc func resizeButtonTapped(_ sender:UIButton) {
+        delegate?.mbOverlayView(self, resizeAction: dimension)
+
         switch dimension {
         case .embed:
-            dimension = .fullScreen
-            resizeButton.setImage(UIImage(systemName: "arrow.down.right.and.arrow.up.left", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
             if let frame = videoPlayerView?.mainContainerView?.bounds {
-                videoPlayerView?.playerLayer.frame = frame
+                delegate?.mbOverlayView(self, resizeAction: dimension)
                 videosStackView.isHidden = false
                 if let view = videoPlayerView?.mainContainerView {
-                   // videoPlayerView?.pinEdges(to: view)
                    leftC = videoPlayerView?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = videoPlayerView?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
                    topC = videoPlayerView?.topAnchor.constraint(equalTo: view.topAnchor)
@@ -200,15 +197,16 @@ class MBVideoPlayerControls: UIView {
                     }
                 }
             }
+            resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
+            dimension = .fullScreen
         case .fullScreen:
-            dimension = .embed
             if let leftC = leftC, let rightC = rightC, let bottomC = bottomC, let topC = topC {
                 NSLayoutConstraint.deactivate([leftC, rightC, topC, bottomC])
                 layoutIfNeeded()
-                resizeButton.setImage(UIImage(systemName: "arrow.up.left.and.arrow.down.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
-                videoPlayerView?.playerLayer.frame = bounds
+                resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
                 videosStackView.isHidden = true
             }
+            dimension = .embed
         }
         UIView.animate(withDuration: 0.3) {
             self.layoutIfNeeded()
@@ -219,7 +217,7 @@ class MBVideoPlayerControls: UIView {
         let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(resizeButton)
-        resizeButton.setImage(UIImage(systemName: "arrow.up.left.and.arrow.down.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
+        resizeButton.setImage(Controls.resize(dimension).image, for: .normal)
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
         if let slider = slider {
             resizeButton.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 10).isActive = true
@@ -277,11 +275,8 @@ class MBVideoPlayerControls: UIView {
         playButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         playButton.widthAnchor.constraint(equalToConstant: 49).isActive = true
         playButton.heightAnchor.constraint(equalToConstant: 52).isActive = true
-        playButton.setImage(UIImage(systemName: "play.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
-        playButton.addTarget(
-            self,
-            action: #selector(self.clickPlayButton(_:)),
-            for: .touchUpInside)
+        playButton.setImage(Controls.playpause(isActive).image, for: .normal)
+        playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
         self.playButton = playButton
     }
     private func addForwardBackwardButton() {
@@ -293,11 +288,8 @@ class MBVideoPlayerControls: UIView {
         backwardButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
         backwardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
         backwardButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        backwardButton.setImage(UIImage(systemName: "backward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
-        backwardButton.addTarget(
-            self,
-            action: #selector(self.clickBackButton(_:)),
-            for: .touchUpInside)
+        backwardButton.setImage(Controls.back.image, for: .normal)
+        backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
         self.backButton = backwardButton
         // forward button
         let forwardButton = UIButton()
@@ -307,11 +299,8 @@ class MBVideoPlayerControls: UIView {
         forwardButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
         forwardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
         forwardButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        forwardButton.setImage(UIImage(systemName: "forward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large)), for: .normal)
-        forwardButton.addTarget(
-            self,
-            action: #selector(self.clickForwardButton(_:)),
-            for: .touchUpInside)
+        forwardButton.setImage(Controls.forward.image, for: .normal)
+        forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
         self.forwardButton = forwardButton
     }
     private func addPlayList() {
@@ -366,30 +355,5 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
     }
 }
 
-class VideoCollectionViewCell: UICollectionViewCell {
 
-    private let videoThumbnail: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 10.0
-        imageView.contentMode = .scaleAspectFill
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func setupUI() {
-        addSubview(videoThumbnail)
-        videoThumbnail.pinEdges(to: self)
-    }
-    
-}
 

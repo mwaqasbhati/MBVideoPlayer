@@ -9,58 +9,35 @@
 import Foundation
 import AVKit
 
-struct PlayerItem {
-    let url: String
-    let thumbnail: String
-}
-
 enum PlayerDimension {
     case embed
     case fullScreen
 }
 
-protocol MBVideoPlayerViewDelegate: class {
-    func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView)
-    func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell?
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndex: IndexPath)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, resizeAction dimension: PlayerDimension)
-}
-
-extension MBVideoPlayerViewDelegate {
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
-        return nil
-    }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndex: IndexPath) { }
-    func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView) {}
-    func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView) {}
-}
-
-
-class MBVideoPlayerView: UIView {
+open class MBVideoPlayerView: UIView {
     
     // MARK: - Constants
 
     // MARK: - Instance Variables
 
-    var playerLayer: AVPlayerLayer!
     private var isShowOverlay: Bool = true
-    private var isFullScreen: Bool = false
     private var dimension: PlayerDimension = .embed
-    var mainContainerView: UIView?
-    private var heightConstraint: NSLayoutConstraint?
-    private var topConstraint: NSLayoutConstraint?
     private var task: DispatchWorkItem? = nil
 
     let overlayView = MBVideoPlayerControls()
     var delegate: MBVideoPlayerViewDelegate?
-    var queuePlayer: AVQueuePlayer!
+    private var queuePlayer: AVQueuePlayer!
+    private var playerLayer: AVPlayerLayer!
+    var mainContainerView: UIView?
     
     let seekDuration: Float64 = 15.0
-    
-    
-    var duration: CMTime? {
+        
+    var totalDuration: CMTime? {
         return self.queuePlayer.currentItem?.asset.duration
+    }
+    
+    var currentTime: CMTime? {
+        return self.queuePlayer.currentTime()
     }
     
     private lazy var backgroundView: UIView = {
@@ -78,43 +55,39 @@ class MBVideoPlayerView: UIView {
       super.init(frame: frame)
       setupPlayer()
     }
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         setupPlayer()
     }
     
     // MARK: - Helper Methods
 
-    func setPlayList(_ initilURL: URL, items: [PlayerItem], fullView: UIView? = nil) {
+    func setPlayListItems(_ initilURL: URL, items: [PlayerItem], fullView: UIView? = nil) {
         translatesAutoresizingMaskIntoConstraints = false
-     //   heightConstraint = heightAnchor.constraint(equalToConstant: 400.0)
-     //   heightConstraint?.isActive = true
-     //   if let top = fullView?.safeAreaLayoutGuide.topAnchor {
-     //       topConstraint = superview?.topAnchor.constraint(equalTo: top, constant: 55.0)
-     //       topConstraint?.isActive = true
-     //   }
-     //   layoutIfNeeded()
         playerLayer.frame = self.bounds
         mainContainerView = fullView
         loadVideo(initilURL)
         overlayView.setPlayList(items, videoPlayerView: self)
     }
-    private func setupPlayer() {
+    private func setupPlayer(_ showOverlay: Bool = true) {
         
         createPlayerView()
-        overlayView.createOverlayView()
-
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(overlayView)
-        overlayView.backgroundColor = .clear
-        overlayView.pinEdges(to: self)
+        
+        isShowOverlay = showOverlay
+        if showOverlay {
+            overlayView.createOverlayView()
+            overlayView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(overlayView)
+            overlayView.backgroundColor = .clear
+            overlayView.pinEdges(to: self)
+        }
         
         queuePlayer.addPeriodicTimeObserver(
             forInterval: CMTime(seconds: 1, preferredTimescale: 100),
             queue: DispatchQueue.main,
             using: { [weak self] (cmtime) in
                 print(cmtime)
-              //  self?.playerTimeLabel.text = cmtime.description
+                self?.overlayView.videoDidChange(cmtime)
         })
         
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -125,7 +98,7 @@ class MBVideoPlayerView: UIView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         tap.cancelsTouchesInView = false
         tap.delegate = self
-        self.addGestureRecognizer(tap)
+        addGestureRecognizer(tap)
 
     }
     
@@ -139,8 +112,8 @@ class MBVideoPlayerView: UIView {
             backgroundView.isHidden = false
             task = DispatchWorkItem {
                 self.overlayView.isHidden = true
-               self.backgroundView.isHidden = true
-               self.isShowOverlay = !self.isShowOverlay
+                self.backgroundView.isHidden = true
+                self.isShowOverlay = !self.isShowOverlay
             }
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(10), execute: task!)
         }
@@ -151,16 +124,16 @@ class MBVideoPlayerView: UIView {
         queuePlayer.removeAllItems()
         let playerItem = AVPlayerItem.init(url: url)
         queuePlayer.insert(playerItem, after: nil)
-      //  playerTimeLabel.text = CMTime.zero.description
-      //  seekSlider.value = 0.0
+        overlayView.videoDidStart()
     }
     
     func seekToTime(_ seekTime: CMTime) {
         print(seekTime)
         self.queuePlayer.currentItem?.seek(to: seekTime, completionHandler: nil)
-      //  self.playerTimeLabel.text = seekTime.description
     }
-    
+    func playPause(_ isActive: Bool) {
+        isActive ? queuePlayer.pause() : queuePlayer.play()
+    }
     private func createPlayerView() {
         queuePlayer = AVQueuePlayer()
         queuePlayer.addObserver(overlayView, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
@@ -172,8 +145,25 @@ class MBVideoPlayerView: UIView {
     
 }
 
+extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
+        return delegate?.mbPlayerView(self, cellForRowAtIndexPath: cellForRowAtIndexPath)
+    }
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndex: IndexPath) {
+        
+    }
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension) {
+        switch dimension {
+        case .embed:
+            playerLayer.frame = frame
+        case .fullScreen:
+            playerLayer.frame = bounds
+        }
+    }
+}
+
 extension MBVideoPlayerView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view?.classForCoder == UIButton.classForCoder() { return false }
         return true
     }
@@ -188,35 +178,5 @@ extension UIView {
     }
 }
 
-extension CMTime {
-    var asDouble: Double {
-        get {
-            return Double(self.value) / Double(self.timescale)
-        }
-    }
-    var asFloat: Float {
-        get {
-            return Float(self.value) / Float(self.timescale)
-        }
-    }
-}
 
-extension CMTime: CustomStringConvertible {
-    public var description: String {
-        get {
-            let seconds = Int(round(self.asDouble))
-            return String(format: "%02d:%02d", seconds / 60, seconds % 60)
-        }
-    }
-}
 
-extension UIButton {
-    
-    func setBackgroundImage(name: String) {
-        UIGraphicsBeginImageContext(frame.size)
-        UIImage(named: name)?.draw(in: bounds)
-        guard let image = UIGraphicsGetImageFromCurrentImageContext() else { return }
-        UIGraphicsEndImageContext()
-        backgroundColor = UIColor(patternImage: image)
-    }
-}

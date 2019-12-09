@@ -17,6 +17,10 @@
 		250109BD239ABC2F0083F142 /* MBVideoPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109BC239ABC2F0083F142 /* MBVideoPlayerUITests.swift */; };
 		250109CB239ABC670083F142 /* MBVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109CA239ABC670083F142 /* MBVideoPlayerView.swift */; };
 		250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */; };
+		46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE1239E1B0D00793264 /* PlayerItem.swift */; };
+		46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */; };
+		46C44CE6239E1BC400793264 /* CMTime+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE5239E1BC400793264 /* CMTime+extension.swift */; };
+		46C44CE8239E1BFD00793264 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,10 @@
 		250109BE239ABC2F0083F142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		250109CA239ABC670083F142 /* MBVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerView.swift; sourceTree = "<group>"; };
 		250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerControls.swift; sourceTree = "<group>"; };
+		46C44CE1239E1B0D00793264 /* PlayerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerItem.swift; sourceTree = "<group>"; };
+		46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerDelegates.swift; sourceTree = "<group>"; };
+		46C44CE5239E1BC400793264 /* CMTime+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+extension.swift"; sourceTree = "<group>"; };
+		46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +114,7 @@
 				2501099A239ABC2D0083F142 /* AppDelegate.swift */,
 				2501099C239ABC2D0083F142 /* SceneDelegate.swift */,
 				2501099E239ABC2D0083F142 /* ViewController.swift */,
-				250109CA239ABC670083F142 /* MBVideoPlayerView.swift */,
-				250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */,
+				46C44CE0239E1AEA00793264 /* MBVideoPlayerView */,
 				250109A0239ABC2D0083F142 /* Main.storyboard */,
 				250109A3239ABC2E0083F142 /* Assets.xcassets */,
 				250109A5239ABC2E0083F142 /* LaunchScreen.storyboard */,
@@ -132,6 +139,19 @@
 				250109BE239ABC2F0083F142 /* Info.plist */,
 			);
 			path = MBVideoPlayerUITests;
+			sourceTree = "<group>";
+		};
+		46C44CE0239E1AEA00793264 /* MBVideoPlayerView */ = {
+			isa = PBXGroup;
+			children = (
+				250109CA239ABC670083F142 /* MBVideoPlayerView.swift */,
+				250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */,
+				46C44CE1239E1B0D00793264 /* PlayerItem.swift */,
+				46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */,
+				46C44CE5239E1BC400793264 /* CMTime+extension.swift */,
+				46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */,
+			);
+			path = MBVideoPlayerView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,11 +285,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46C44CE8239E1BFD00793264 /* VideoCollectionViewCell.swift in Sources */,
+				46C44CE6239E1BC400793264 /* CMTime+extension.swift in Sources */,
 				2501099F239ABC2D0083F142 /* ViewController.swift in Sources */,
 				250109CB239ABC670083F142 /* MBVideoPlayerView.swift in Sources */,
 				250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */,
 				2501099B239ABC2D0083F142 /* AppDelegate.swift in Sources */,
 				2501099D239ABC2D0083F142 /* SceneDelegate.swift in Sources */,
+				46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */,
+				46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,6 +468,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MBVideoPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -451,7 +476,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.VideoPlayer.MBVideoPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -461,6 +486,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MBVideoPlayer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -468,7 +494,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.VideoPlayer.MBVideoPlayer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

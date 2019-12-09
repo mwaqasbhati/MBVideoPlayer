@@ -30,7 +30,7 @@ class ViewController: UIViewController {
             return PlayerItem(url: video, thumbnail: "")
         })
         if let urlStr = videos.first, let url = URL(string: urlStr) {
-            videoPlayerView.setPlayList(url, items: items, fullView: self.view)
+            videoPlayerView.setPlayListItems(url, items: items, fullView: self.view)
         }
     }
     
