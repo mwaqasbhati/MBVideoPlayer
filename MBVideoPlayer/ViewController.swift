@@ -27,7 +27,7 @@ class ViewController: UIViewController {
       //  view.addSubview(playerView)
       //  playerView.pinEdges(to: self.view)
         let items = videos.map({ (video) -> PlayerItem in
-            return PlayerItem(url: video, thumbnail: "")
+            return PlayerItem(title: "Some Test Title", url: video, thumbnail: "")
         })
         if let urlStr = videos.first, let url = URL(string: urlStr) {
             videoPlayerView.setPlayListItems(url, items: items, fullView: self.view)

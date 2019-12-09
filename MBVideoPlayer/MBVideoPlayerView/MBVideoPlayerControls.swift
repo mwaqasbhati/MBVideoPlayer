@@ -21,6 +21,7 @@ class MBVideoPlayerControls: UIView {
     private var forwardButton: UIButton!
     private var resizeButton: UIButton!
     private var playerTimeLabel: UILabel!
+    private var fullTimeLabel: UILabel!
     private var seekSlider: UISlider!
     private var activityView = UIActivityIndicatorView(style: .large)
     private let videosStackView = UIStackView()
@@ -56,9 +57,8 @@ class MBVideoPlayerControls: UIView {
         super.init(coder: coder)
     }
     
-    func setPlayList(_ items: [PlayerItem], videoPlayerView: MBVideoPlayerView) {
+    func setPlayList(_ items: [PlayerItem]) {
         playerItems = items
-        self.videoPlayerView = videoPlayerView
         collectionView.reloadData()
     }
     func createOverlayView() {
@@ -87,8 +87,12 @@ class MBVideoPlayerControls: UIView {
             addTimeBarWith(playerTimeLabel)
         }
         
+        if configuration.canShowTime {
+            addTotalTimeLabelWith(seekSlider)
+        }
+        
         if configuration.canShowFullScreenBtn {
-            addResizeBtnWith(seekSlider)
+            addResizeBtnWith(fullTimeLabel)
         }
         
         if configuration.canShowVideoList {
@@ -101,6 +105,7 @@ class MBVideoPlayerControls: UIView {
     func videoDidStart() {
         playerTimeLabel.text = CMTime.zero.description
         seekSlider.value = 0.0
+        fullTimeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
     }
     func videoDidChange(_ time: CMTime) {
         playerTimeLabel.text = time.description
@@ -131,9 +136,9 @@ class MBVideoPlayerControls: UIView {
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
+        isActive = !isActive
         playButton.setImage(Controls.playpause(isActive).image, for: .normal)
         videoPlayerView?.playPause(isActive)
-        isActive = !isActive
         print("clicked -> \(isActive)")
     }
     
@@ -198,17 +203,17 @@ class MBVideoPlayerControls: UIView {
             self.layoutIfNeeded()
         }
     }
-    private func addResizeBtnWith(_ slider: UISlider?) {
+    private func addResizeBtnWith(_ fullTimeLabel: UILabel?) {
         // resize button
         let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(resizeButton)
         resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
-        if let slider = slider {
-            resizeButton.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 10).isActive = true
+        if let fullTimeLabel = fullTimeLabel {
+            resizeButton.leadingAnchor.constraint(equalTo: fullTimeLabel.trailingAnchor, constant: 10).isActive = true
             resizeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-            resizeButton.centerYAnchor.constraint(equalTo: slider.centerYAnchor, constant: 0).isActive = true
+            resizeButton.centerYAnchor.constraint(equalTo: fullTimeLabel.centerYAnchor, constant: 0).isActive = true
         } else {
             resizeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
             resizeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
@@ -250,7 +255,21 @@ class MBVideoPlayerControls: UIView {
         label.widthAnchor.constraint(equalToConstant: 60).isActive = true
         label.heightAnchor.constraint(equalToConstant: 30).isActive = true
         playerTimeLabel = label
-
+    }
+    private func addTotalTimeLabelWith(_ slider: UISlider) {
+        // total time label
+        
+        let timeLabel = UILabel()
+        timeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(timeLabel)
+        timeLabel.textColor = .blue
+        timeLabel.textAlignment = .center
+        timeLabel.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 10).isActive = true
+        timeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+        timeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        fullTimeLabel = timeLabel
     }
     private func addPlayPauseButton() {
         // play/pause button
@@ -329,7 +348,7 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? VideoCollectionViewCell else {
                return UICollectionViewCell()
            }
-          // cell.setData(playerItems?[indexPath.row])
+           cell.setData(playerItems?[indexPath.row])
            return cell
         }
     }

@@ -41,7 +41,7 @@ enum Controls {
     public var image: UIImage? {
         switch self {
         case .playpause(let isActive):
-            return UIImage(systemName: isActive ? "play.fill" : "pause.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large))
+            return UIImage(systemName: isActive ? "pause.fill" : "play.fill" , withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large))
         case .resize(let dimension):
             switch dimension {
             case .embed:

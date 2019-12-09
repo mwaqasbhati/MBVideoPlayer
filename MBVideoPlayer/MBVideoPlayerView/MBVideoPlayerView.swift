@@ -57,15 +57,20 @@ open class MBVideoPlayerView: UIView {
         super.init(coder: coder)
         setupPlayer()
     }
-    
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = self.bounds
+        
+    }
     // MARK: - Helper Methods
 
     func setPlayListItems(_ initilURL: URL, items: [PlayerItem], fullView: UIView? = nil) {
         translatesAutoresizingMaskIntoConstraints = false
         playerLayer.frame = self.bounds
         mainContainerView = fullView
+        overlayView.videoPlayerView = self
         loadVideo(initilURL)
-        overlayView.setPlayList(items, videoPlayerView: self)
+        overlayView.setPlayList(items)
     }
     private func setupPlayer(_ showOverlay: Bool = true) {
         
@@ -130,7 +135,7 @@ open class MBVideoPlayerView: UIView {
         self.queuePlayer.currentItem?.seek(to: seekTime, completionHandler: nil)
     }
     func playPause(_ isActive: Bool) {
-        isActive ? queuePlayer.pause() : queuePlayer.play()
+        isActive ? queuePlayer.play() : queuePlayer.pause()
     }
     private func createPlayerView() {
         queuePlayer = AVQueuePlayer()

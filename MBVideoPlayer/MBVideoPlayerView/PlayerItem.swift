@@ -10,6 +10,7 @@ import Foundation
 
 
 struct PlayerItem {
+    let title: String
     let url: String
     let thumbnail: String
 }

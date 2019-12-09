@@ -10,7 +10,7 @@ import UIKit
 
 class VideoCollectionViewCell: UICollectionViewCell {
 
-    private let videoThumbnail: UIImageView = {
+    let videoThumbnail: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 10.0
@@ -18,7 +18,14 @@ class VideoCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
-    
+    let titleLabel: UILabel = {
+       let label = UILabel()
+       label.translatesAutoresizingMaskIntoConstraints = false
+       label.textColor = .white
+       label.textAlignment = .center
+       label.numberOfLines = 0
+       return label
+    }()
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -31,6 +38,16 @@ class VideoCollectionViewCell: UICollectionViewCell {
     func setupUI() {
         addSubview(videoThumbnail)
         videoThumbnail.pinEdges(to: self)
+        addSubview(titleLabel)
+        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+        titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 5).isActive = true
+        titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor, constant: 5).isActive = true
     }
-    
+    func setData(_ playListItem: PlayerItem?) {
+        guard let playListItem = playListItem else {
+            return
+        }
+        titleLabel.text = playListItem.title
+    }
 }
