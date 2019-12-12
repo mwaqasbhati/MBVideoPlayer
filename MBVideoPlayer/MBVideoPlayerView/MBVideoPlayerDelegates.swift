@@ -45,6 +45,8 @@ protocol MBVideoPlayerControlsDelegate: class {
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath indexPath: IndexPath)
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension)
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerStateDidChange: MBVideoPlayerState)
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval)
 }
 
 

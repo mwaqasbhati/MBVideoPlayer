@@ -86,7 +86,18 @@ class MBVideoPlayerControls: UIView {
        stackView.translatesAutoresizingMaskIntoConstraints = false
        return stackView
     }()
-    
+    private lazy var collectionView: UICollectionView =  {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 100, height: 100)
+        layout.scrollDirection = .horizontal
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        return collectionView
+    }()
     
     private var playerItems: [PlayerItem]?
     private var isActive: Bool = false
@@ -102,18 +113,7 @@ class MBVideoPlayerControls: UIView {
 
     private var cellId = "videoCellId"
 
-    private lazy var collectionView: UICollectionView =  {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 100, height: 100)
-        layout.scrollDirection = .horizontal
-        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.backgroundColor = .clear
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        return collectionView
-    }()
+    
     
     // MARK: - View Initializers
 
@@ -185,10 +185,12 @@ class MBVideoPlayerControls: UIView {
             let newStatus = AVPlayer.TimeControlStatus(rawValue: newValue)
             if newStatus != oldStatus {
                 DispatchQueue.main.async {[weak self] in
+                    guard let `self` = self else { return }
                     if newStatus == .playing || newStatus == .paused {
-                        self?.activityView.isHidden = true
+                        self.delegate?.mbOverlayView(self, playerStateDidChange: (self.isActive ? MBVideoPlayerState.pause : MBVideoPlayerState.playing))
+                        self.activityView.isHidden = true
                     } else {
-                        self?.activityView.isHidden = false
+                        self.activityView.isHidden = false
                     }
                 }
             }
@@ -202,6 +204,7 @@ class MBVideoPlayerControls: UIView {
         let seekTime = CMTime(seconds: Double(sender.value) * totalDuration.asDouble, preferredTimescale: 100)
         playerTimeLabel.text = seekTime.description
         self.videoPlayerView?.seekToTime(seekTime)
+        delegate?.mbOverlayView(self, playerTimeDidChange: seekTime.asDouble, totalDuration: totalDuration.asDouble)
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
@@ -223,6 +226,7 @@ class MBVideoPlayerControls: UIView {
         videoPlayerView?.seekToTime(time2)
         playerTimeLabel.text = time2.description
         seekSlider.value = time2.asFloat / totalDuration.asFloat
+        delegate?.mbOverlayView(self, playerTimeDidChange: time2.asDouble, totalDuration: totalDuration.asDouble)
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
@@ -235,6 +239,7 @@ class MBVideoPlayerControls: UIView {
             videoPlayerView?.seekToTime(time2)
             playerTimeLabel.text = time2.description
             seekSlider.value = time2.asFloat / totalDuration.asFloat
+            delegate?.mbOverlayView(self, playerTimeDidChange: time2.asDouble, totalDuration: totalDuration.asDouble)
         }
     }
     

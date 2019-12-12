@@ -132,6 +132,7 @@ open class MBVideoPlayerView: UIView {
         let playerItem = AVPlayerItem.init(url: url)
         queuePlayer.insert(playerItem, after: nil)
         overlayView.videoDidStart()
+        delegate?.mbPlayerViewReadyToPlayVideo(self)
     }
     
     func seekToTime(_ seekTime: CMTime) {
@@ -166,6 +167,12 @@ extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
         case .fullScreen:
             playerLayer.frame = bounds
         }
+    }
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerStateDidChange: MBVideoPlayerState) {
+        delegate?.mbPlayerView(self, playerStateDidChange: playerStateDidChange)
+    }
+    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval) {
+        delegate?.mbPlayerView(self, playerTimeDidChange: newTime, totalDuration: totalDuration)
     }
 }
 
