@@ -16,17 +16,79 @@ class MBVideoPlayerControls: UIView {
 
     // MARK: - Instance Variables
 
-    private var playButton: UIButton!
-    private var backButton: UIButton!
-    private var forwardButton: UIButton!
-    private var resizeButton: UIButton!
-    private var playerTimeLabel: UILabel!
-    private var fullTimeLabel: UILabel!
-    private var seekSlider: UISlider!
-    private var activityView = UIActivityIndicatorView(style: .large)
-    private let videosStackView = UIStackView()
+    lazy private var playButton: UIButton! = {
+       let playButton = UIButton()
+        playButton.translatesAutoresizingMaskIntoConstraints = false
+        playButton.setImage(Controls.playpause(isActive).image, for: .normal)
+        playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
+        return playButton
+    }()
+    lazy private var backButton: UIButton! = {
+        let backwardButton = UIButton()
+        backwardButton.translatesAutoresizingMaskIntoConstraints = false
+        backwardButton.setImage(Controls.back.image, for: .normal)
+        backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
+        return backwardButton
+    }()
+    lazy private var forwardButton: UIButton! = {
+       let forwardButton = UIButton()
+        forwardButton.translatesAutoresizingMaskIntoConstraints = false
+        forwardButton.setImage(Controls.forward.image, for: .normal)
+        forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
+        return forwardButton
+    }()
+    lazy private var resizeButton: UIButton = {
+       let resizeButton = UIButton()
+        resizeButton.translatesAutoresizingMaskIntoConstraints = false
+        resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
+        resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
+        return resizeButton
+    }()
+    lazy private var playerTimeLabel: UILabel = {
+        let label = UILabel()
+        label.text = CMTime.zero.description
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .blue
+        label.textAlignment = .center
+        return label
+    }()
+    lazy private var fullTimeLabel: UILabel = {
+       let timeLabel = UILabel()
+        timeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        timeLabel.textColor = .blue
+        timeLabel.textAlignment = .center
+        return timeLabel
+    }()
+    lazy private var seekSlider: UISlider = {
+        let slider = UISlider()
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.addTarget(self, action: #selector(self.changeSeekSlider(_:)), for: .valueChanged)
+        return slider
+    }()
+    lazy private var activityView: UIActivityIndicatorView = {
+        let activity = UIActivityIndicatorView(style: .large)
+        activity.translatesAutoresizingMaskIntoConstraints = false
+        activity.color = .white
+        activity.startAnimating()
+        return activity
+    }()
+    lazy private var playListStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.isHidden = true
+        stackView.axis = .horizontal
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    lazy private var bottomControlsStackView: UIStackView  = {
+       let stackView = UIStackView()
+       stackView.axis = .horizontal
+       stackView.translatesAutoresizingMaskIntoConstraints = false
+       return stackView
+    }()
+    
+    
     private var playerItems: [PlayerItem]?
-
     private var isActive: Bool = false
 
     var delegate: MBVideoPlayerControlsDelegate?
@@ -45,6 +107,11 @@ class MBVideoPlayerControls: UIView {
         layout.itemSize = CGSize(width: 100, height: 100)
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
         return collectionView
     }()
     
@@ -64,13 +131,15 @@ class MBVideoPlayerControls: UIView {
     func createOverlayView() {
         
         // activity indicator
-        activityView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(activityView)
-        activityView.color = .white
         activityView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         activityView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        activityView.startAnimating()
         
+        addSubview(bottomControlsStackView)
+        bottomControlsStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+        bottomControlsStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
+        bottomControlsStackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+
         if configuration.canShowPlayPause {
             addPlayPauseButton()
         }
@@ -176,7 +245,7 @@ class MBVideoPlayerControls: UIView {
         case .embed:
             if let _ = videoPlayerView?.mainContainerView?.bounds {
                 delegate?.mbOverlayView(self, resizeAction: configuration.dimension)
-                videosStackView.isHidden = false
+                playListStackView.isHidden = false
                 if let view = videoPlayerView?.mainContainerView {
                    leftC = videoPlayerView?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = videoPlayerView?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -195,7 +264,7 @@ class MBVideoPlayerControls: UIView {
                 NSLayoutConstraint.deactivate([leftC, rightC, topC, bottomC])
                 layoutIfNeeded()
                 resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
-                videosStackView.isHidden = true
+                playListStackView.isHidden = true
             }
             configuration.dimension = .embed
         }
@@ -205,132 +274,55 @@ class MBVideoPlayerControls: UIView {
     }
     private func addResizeBtnWith(_ fullTimeLabel: UILabel?) {
         // resize button
-        let resizeButton = UIButton()
-        resizeButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(resizeButton)
-        resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
-        resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
-        if let fullTimeLabel = fullTimeLabel {
-            resizeButton.leadingAnchor.constraint(equalTo: fullTimeLabel.trailingAnchor, constant: 10).isActive = true
-            resizeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-            resizeButton.centerYAnchor.constraint(equalTo: fullTimeLabel.centerYAnchor, constant: 0).isActive = true
-        } else {
-            resizeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-            resizeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        }
+        bottomControlsStackView.addArrangedSubview(resizeButton)
         resizeButton.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
         resizeButton.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
-        self.resizeButton = resizeButton
     }
     private func addTimeBarWith(_ timeLabel: UILabel?) {
           // seek slider
-          
-          let slider = UISlider()
-          slider.translatesAutoresizingMaskIntoConstraints = false
-          addSubview(slider)
-        if let label = timeLabel {
-            slider.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 5).isActive = true
-            slider.centerYAnchor.constraint(equalTo: label.centerYAnchor, constant: 0).isActive = true
-        } else {
-            slider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-            slider.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        }
-          slider.addTarget(
-              self,
-              action: #selector(self.changeSeekSlider(_:)),
-              for: .valueChanged)
-          seekSlider = slider
+          bottomControlsStackView.addArrangedSubview(seekSlider)
+          seekSlider.centerYAnchor.constraint(equalTo: bottomControlsStackView.centerYAnchor, constant: 0).isActive = true
     }
     private func addTimeLabel() {
         // time label
-        
-        let label = UILabel()
-        label.text = CMTime.zero.description
-        label.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(label)
-        label.textColor = .blue
-        label.textAlignment = .center
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        label.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        label.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        playerTimeLabel = label
+        bottomControlsStackView.addArrangedSubview(playerTimeLabel)
+        playerTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        playerTimeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     private func addTotalTimeLabelWith(_ slider: UISlider) {
         // total time label
-        
-        let timeLabel = UILabel()
-        timeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
-        timeLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(timeLabel)
-        timeLabel.textColor = .blue
-        timeLabel.textAlignment = .center
-        timeLabel.leadingAnchor.constraint(equalTo: slider.trailingAnchor, constant: 10).isActive = true
-        timeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        fullTimeLabel = timeLabel
+        bottomControlsStackView.addArrangedSubview(fullTimeLabel)
+        fullTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        fullTimeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     private func addPlayPauseButton() {
         // play/pause button
-        let playButton = UIButton()
-        playButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(playButton)
         playButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         playButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        playButton.widthAnchor.constraint(equalToConstant: 49).isActive = true
-        playButton.heightAnchor.constraint(equalToConstant: 52).isActive = true
-        playButton.setImage(Controls.playpause(isActive).image, for: .normal)
-        playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
-        self.playButton = playButton
     }
     private func addForwardBackwardButton() {
         // backward button
-        let backwardButton = UIButton()
-        backwardButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(backwardButton)
-        backwardButton.trailingAnchor.constraint(equalTo: playButton.leadingAnchor, constant: -20.0).isActive = true
-        backwardButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
-        backwardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        backwardButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        backwardButton.setImage(Controls.back.image, for: .normal)
-        backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
-        self.backButton = backwardButton
+        addSubview(backButton)
+        backButton.trailingAnchor.constraint(equalTo: playButton.leadingAnchor, constant: -25.0).isActive = true
+        backButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
         // forward button
-        let forwardButton = UIButton()
-        forwardButton.translatesAutoresizingMaskIntoConstraints = false
+        
         addSubview(forwardButton)
-        forwardButton.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 20.0).isActive = true
+        forwardButton.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 25.0).isActive = true
         forwardButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
-        forwardButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        forwardButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        forwardButton.setImage(Controls.forward.image, for: .normal)
-        forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
-        self.forwardButton = forwardButton
     }
     private func addPlayList() {
         // videos stackview
-        videosStackView.isHidden = true
-        videosStackView.axis = .horizontal
-        videosStackView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(videosStackView)
-        videosStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-        videosStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-        videosStackView.bottomAnchor.constraint(equalTo: self.seekSlider.topAnchor, constant: -10.0).isActive = true
-        videosStackView.heightAnchor.constraint(equalToConstant: 100.0).isActive = true
+        addSubview(playListStackView)
+        playListStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+        playListStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
+        playListStackView.bottomAnchor.constraint(equalTo: self.seekSlider.topAnchor, constant: -10.0).isActive = true
+        playListStackView.heightAnchor.constraint(equalToConstant: 100.0).isActive = true
         
         // collectionView
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        videosStackView.addSubview(collectionView)
-        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.backgroundColor = .clear
-        collectionView.delegate = self
-        collectionView.dataSource = self
-
-        collectionView.leadingAnchor.constraint(equalTo: videosStackView.leadingAnchor).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: videosStackView.trailingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: videosStackView.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: videosStackView.bottomAnchor).isActive = true
+        playListStackView.addSubview(collectionView)
+        collectionView.pinEdges(to: playListStackView)
     }
 }
 

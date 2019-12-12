@@ -24,6 +24,7 @@ protocol MBVideoPlayerViewDelegate: class {
     func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
     func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath)
     func mbPlayerView(_ playerView: MBVideoPlayerView, resizeAction dimension: PlayerDimension)
+    func mbPlayerView(_ playerView: MBVideoPlayerView, orientationDidChange: PlayerDimension)
 }
 
 extension MBVideoPlayerViewDelegate {
@@ -35,6 +36,7 @@ extension MBVideoPlayerViewDelegate {
     func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath) { }
     func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView) {}
     func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView) {}
+    func mbPlayerView(_ playerView: MBVideoPlayerView, orientationDidChange: PlayerDimension) {}
 }
 
 // 2- MBVideoPlayerControls

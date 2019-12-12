@@ -50,9 +50,9 @@ enum Controls {
                 return UIImage(systemName: "arrow.up.left.and.arrow.down.right", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large))
             }
         case .back:
-            return UIImage(systemName: "backward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large))
+            return UIImage(systemName: "backward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .heavy, scale: .medium))
         case .forward:
-            return UIImage(systemName: "forward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 34, weight: .heavy, scale: .large))
+            return UIImage(systemName: "forward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .heavy, scale: .medium))
         default:
             return nil
             

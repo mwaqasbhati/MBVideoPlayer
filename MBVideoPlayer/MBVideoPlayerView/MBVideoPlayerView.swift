@@ -103,8 +103,12 @@ open class MBVideoPlayerView: UIView {
         tap.delegate = self
         addGestureRecognizer(tap)
 
+        NotificationCenter.default.addObserver(self, selector: #selector(self.onOrientationChanged), name: UIDevice.orientationDidChangeNotification, object: nil)
+
     }
-    
+    @objc func onOrientationChanged() {
+        delegate?.mbPlayerView(self, orientationDidChange: dimension)
+    }
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         if isShowOverlay {
             overlayView.isHidden = true
