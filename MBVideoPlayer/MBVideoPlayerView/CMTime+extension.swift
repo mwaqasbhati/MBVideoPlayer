@@ -37,6 +37,7 @@ enum Controls {
     case back
     case slider
     case resize(PlayerDimension)
+    case options
     
     public var image: UIImage? {
         switch self {
@@ -53,6 +54,8 @@ enum Controls {
             return UIImage(systemName: "backward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .heavy, scale: .medium))
         case .forward:
             return UIImage(systemName: "forward.fill", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .heavy, scale: .medium))
+        case .options:
+            return UIImage(systemName: "ellipsis", withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .heavy, scale: .medium))
         default:
             return nil
             

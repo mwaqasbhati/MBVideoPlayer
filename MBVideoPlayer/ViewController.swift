@@ -29,8 +29,8 @@ class ViewController: UIViewController {
         let items = videos.map({ (video) -> PlayerItem in
             return PlayerItem(title: "Some Test Title", url: video, thumbnail: "")
         })
-        if let urlStr = videos.first, let url = URL(string: urlStr) {
-            videoPlayerView.setPlayListItems(url, items: items, fullView: self.view)
+        if let item = items.first {
+            videoPlayerView.setPlayListItemsWith(currentItem: item, items: items, fullView: view)
         }
     }
     

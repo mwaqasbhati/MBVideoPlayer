@@ -17,7 +17,9 @@ struct MBConfiguration {
     var canShowTimeBar = true
     var canShowFullScreenBtn = true
     var canShowForwardBack = true
-
+    var canShowHeader = true
+    var canShowHeaderTitle = true
+    var canShowHeaderOption = true
     var dimension: PlayerDimension = .embed
 
     let seekDuration: Float64 = 15.0

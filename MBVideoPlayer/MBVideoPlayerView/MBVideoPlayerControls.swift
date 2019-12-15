@@ -38,7 +38,7 @@ class MBVideoPlayerControls: UIView {
         return forwardButton
     }()
     lazy private var resizeButton: UIButton = {
-       let resizeButton = UIButton()
+        let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
         resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
@@ -100,10 +100,12 @@ class MBVideoPlayerControls: UIView {
     }()
     
     private var playerItems: [PlayerItem]?
+    private var currentItem: PlayerItem?
     private var isActive: Bool = false
 
     var delegate: MBVideoPlayerControlsDelegate?
     weak var videoPlayerView: MBVideoPlayerView?
+    var videoPlayerHeader: MBVideoPlayerHeaderView?
     var configuration = MBConfiguration()
 
     private var topC: NSLayoutConstraint?
@@ -124,9 +126,11 @@ class MBVideoPlayerControls: UIView {
         super.init(coder: coder)
     }
     
-    func setPlayList(_ items: [PlayerItem]) {
+    func setPlayListWith(currentItem: PlayerItem, items: [PlayerItem]) {
         playerItems = items
+        self.currentItem = currentItem
         collectionView.reloadData()
+        videoPlayerHeader?.setTitle(currentItem.title)
     }
     func createOverlayView() {
         
@@ -153,11 +157,11 @@ class MBVideoPlayerControls: UIView {
         }
         
         if configuration.canShowTimeBar {
-            addTimeBarWith(playerTimeLabel)
+            addTimeBar()
         }
         
         if configuration.canShowTime {
-            addTotalTimeLabelWith(seekSlider)
+            addTotalTimeLabel()
         }
         
         if configuration.canShowFullScreenBtn {
@@ -168,6 +172,14 @@ class MBVideoPlayerControls: UIView {
             addPlayList()
         }
 
+        if configuration.canShowHeader {
+            videoPlayerHeader = MBVideoPlayerHeaderView()
+            addSubview(videoPlayerHeader!)
+            videoPlayerHeader?.createHeaderViewWith(configuration: configuration)
+            videoPlayerHeader!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+            videoPlayerHeader!.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
+            videoPlayerHeader!.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+        }
         
         
     }
@@ -283,7 +295,7 @@ class MBVideoPlayerControls: UIView {
         resizeButton.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
         resizeButton.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
     }
-    private func addTimeBarWith(_ timeLabel: UILabel?) {
+    private func addTimeBar() {
           // seek slider
           bottomControlsStackView.addArrangedSubview(seekSlider)
           seekSlider.centerYAnchor.constraint(equalTo: bottomControlsStackView.centerYAnchor, constant: 0).isActive = true
@@ -294,7 +306,7 @@ class MBVideoPlayerControls: UIView {
         playerTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
         playerTimeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
-    private func addTotalTimeLabelWith(_ slider: UISlider) {
+    private func addTotalTimeLabel() {
         // total time label
         bottomControlsStackView.addArrangedSubview(fullTimeLabel)
         fullTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true

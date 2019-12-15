@@ -19,10 +19,10 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="500"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b5d-xG-4Ta">
-                                        <rect key="frame" x="170" y="185" width="57" height="34"/>
+                                        <rect key="frame" x="185" y="185" width="30" height="34"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" image="backward.fill" catalog="system">
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="34" scale="medium" weight="heavy"/>
+                                        <state key="normal">
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="32" scale="medium" weight="heavy"/>
                                         </state>
                                     </button>
                                 </subviews>
@@ -65,7 +65,4 @@
             <point key="canvasLocation" x="139" y="127"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="backward.fill" catalog="system" width="64" height="38"/>
-    </resources>
 </document>

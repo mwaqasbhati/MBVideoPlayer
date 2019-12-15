@@ -64,13 +64,15 @@ open class MBVideoPlayerView: UIView {
     }
     // MARK: - Helper Methods
 
-    func setPlayListItems(_ initilURL: URL, items: [PlayerItem], fullView: UIView? = nil) {
+    func setPlayListItemsWith(currentItem: PlayerItem, items: [PlayerItem], fullView: UIView? = nil) {
         translatesAutoresizingMaskIntoConstraints = false
         playerLayer.frame = self.bounds
         mainContainerView = fullView
         overlayView.videoPlayerView = self
-        loadVideo(initilURL)
-        overlayView.setPlayList(items)
+        if let url = URL(string: currentItem.url) {
+            loadVideo(url)
+        }
+        overlayView.setPlayListWith(currentItem: currentItem, items: items)
     }
     private func setupPlayer(_ showOverlay: Bool = true) {
         
