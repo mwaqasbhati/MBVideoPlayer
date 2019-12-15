@@ -19,34 +19,25 @@ enum MBVideoPlayerState {
 // 1- MBVideoPlayerView
 
 protocol MBVideoPlayerViewDelegate: class {
-    func mbPlayerView(_ playerView: MBVideoPlayerView, playerStateDidChange: MBVideoPlayerState)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, resizeAction dimension: PlayerDimension)
-    func mbPlayerView(_ playerView: MBVideoPlayerView, orientationDidChange: PlayerDimension)
+    var playerStateDidChange: ((MBVideoPlayerState)->())? {get set}
+    var playerTimeDidChange: ((TimeInterval, TimeInterval)->())? {get set}
+    var playerOrientationDidChange: ((PlayerDimension) -> ())? {get set}
+    var playerDidChangeSize: ((PlayerDimension) -> ())? {get set}
+    var playerCellForItem: (()->(UICollectionViewCell))? {get set}
+    var playerDidSelectItem: ((IndexPath)->())? {get set}
 }
 
 extension MBVideoPlayerViewDelegate {
-    func mbPlayerView(_ playerView: MBVideoPlayerView, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell? {
-        return nil
-    }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, playerStateDidChange: MBVideoPlayerState) { }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval) { }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, didSelectRowAtIndexPath indexPath: IndexPath) { }
-    func mbPlayerViewReadyToPlayVideo(_ playerView: MBVideoPlayerView) {}
-    func mbPlayerViewDidReachToEnd(_ playerView: MBVideoPlayerView) {}
-    func mbPlayerView(_ playerView: MBVideoPlayerView, orientationDidChange: PlayerDimension) {}
+    var playerStateDidChange: ((MBVideoPlayerState)->())? { get { return nil } set {  } }
+    var playerTimeDidChange: ((TimeInterval, TimeInterval)->())? { get { nil } set { } }
+    var playerOrientationDidChange: ((PlayerDimension) -> ())? { get { return nil } set { } }
+    var playerDidChangeSize: ((PlayerDimension) -> ())? { get { return nil } set { } }
+    var playerCellForItem: (()->(UICollectionViewCell))? { get { return nil } set { } }
+    var playerDidSelectItem: ((IndexPath)->())? { get { return nil } set { } }
 }
 
 // 2- MBVideoPlayerControls
 
-protocol MBVideoPlayerControlsDelegate: class {
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath indexPath: IndexPath) -> UICollectionViewCell?
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath indexPath: IndexPath)
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension)
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerStateDidChange: MBVideoPlayerState)
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval)
-}
+protocol MBVideoPlayerControlsDelegate: MBVideoPlayerViewDelegate { }
 
 

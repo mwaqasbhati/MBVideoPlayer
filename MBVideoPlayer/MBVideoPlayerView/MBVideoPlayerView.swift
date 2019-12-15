@@ -14,6 +14,7 @@ enum PlayerDimension {
     case fullScreen
 }
 
+
 open class MBVideoPlayerView: UIView {
     
     // MARK: - Constants
@@ -109,7 +110,7 @@ open class MBVideoPlayerView: UIView {
 
     }
     @objc func onOrientationChanged() {
-        delegate?.mbPlayerView(self, orientationDidChange: dimension)
+        delegate?.playerOrientationDidChange!(dimension)
     }
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         if isShowOverlay {
@@ -134,7 +135,7 @@ open class MBVideoPlayerView: UIView {
         let playerItem = AVPlayerItem.init(url: url)
         queuePlayer.insert(playerItem, after: nil)
         overlayView.videoDidStart()
-        delegate?.mbPlayerViewReadyToPlayVideo(self)
+        delegate?.playerStateDidChange!(.readyToPlay)
     }
     
     func seekToTime(_ seekTime: CMTime) {
@@ -157,10 +158,10 @@ open class MBVideoPlayerView: UIView {
 
 extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
-        return delegate?.mbPlayerView(self, cellForRowAtIndexPath: cellForRowAtIndexPath)
+        return delegate?.playerCellForItem!()
     }
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath: IndexPath) {
-        
+        delegate?.playerDidSelectItem!(didSelectRowAtIndexPath)
     }
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension) {
         switch dimension {
@@ -171,10 +172,10 @@ extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
         }
     }
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerStateDidChange: MBVideoPlayerState) {
-        delegate?.mbPlayerView(self, playerStateDidChange: playerStateDidChange)
+        delegate?.playerStateDidChange!(playerStateDidChange)
     }
     func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval) {
-        delegate?.mbPlayerView(self, playerTimeDidChange: newTime, totalDuration: totalDuration)
+        delegate?.playerTimeDidChange!(newTime, totalDuration)
     }
 }
 

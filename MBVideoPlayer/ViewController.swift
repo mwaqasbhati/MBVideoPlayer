@@ -32,6 +32,10 @@ class ViewController: UIViewController {
         if let item = items.first {
             videoPlayerView.setPlayListItemsWith(currentItem: item, items: items, fullView: view)
         }
+        
+        videoPlayerView.delegate?.playerStateDidChange = { (state) in
+            
+        }
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

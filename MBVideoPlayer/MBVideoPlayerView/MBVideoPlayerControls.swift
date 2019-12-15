@@ -199,7 +199,7 @@ class MBVideoPlayerControls: UIView {
                 DispatchQueue.main.async {[weak self] in
                     guard let `self` = self else { return }
                     if newStatus == .playing || newStatus == .paused {
-                        self.delegate?.mbOverlayView(self, playerStateDidChange: (self.isActive ? MBVideoPlayerState.pause : MBVideoPlayerState.playing))
+                        self.delegate?.playerStateDidChange!((self.isActive ? MBVideoPlayerState.pause : MBVideoPlayerState.playing))
                         self.activityView.isHidden = true
                     } else {
                         self.activityView.isHidden = false
@@ -216,7 +216,7 @@ class MBVideoPlayerControls: UIView {
         let seekTime = CMTime(seconds: Double(sender.value) * totalDuration.asDouble, preferredTimescale: 100)
         playerTimeLabel.text = seekTime.description
         self.videoPlayerView?.seekToTime(seekTime)
-        delegate?.mbOverlayView(self, playerTimeDidChange: seekTime.asDouble, totalDuration: totalDuration.asDouble)
+        delegate?.playerTimeDidChange!(seekTime.asDouble, totalDuration.asDouble)
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
@@ -238,7 +238,7 @@ class MBVideoPlayerControls: UIView {
         videoPlayerView?.seekToTime(time2)
         playerTimeLabel.text = time2.description
         seekSlider.value = time2.asFloat / totalDuration.asFloat
-        delegate?.mbOverlayView(self, playerTimeDidChange: time2.asDouble, totalDuration: totalDuration.asDouble)
+        delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
@@ -251,17 +251,16 @@ class MBVideoPlayerControls: UIView {
             videoPlayerView?.seekToTime(time2)
             playerTimeLabel.text = time2.description
             seekSlider.value = time2.asFloat / totalDuration.asFloat
-            delegate?.mbOverlayView(self, playerTimeDidChange: time2.asDouble, totalDuration: totalDuration.asDouble)
+            delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
         }
     }
     
     @objc func resizeButtonTapped(_ sender:UIButton) {
-        delegate?.mbOverlayView(self, resizeAction: configuration.dimension)
+        delegate?.playerDidChangeSize!(configuration.dimension)
 
         switch configuration.dimension {
         case .embed:
             if let _ = videoPlayerView?.mainContainerView?.bounds {
-                delegate?.mbOverlayView(self, resizeAction: configuration.dimension)
                 playListStackView.isHidden = false
                 if let view = videoPlayerView?.mainContainerView {
                    leftC = videoPlayerView?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
@@ -351,7 +350,7 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
         return playerItems?.count ?? 0
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = delegate?.mbOverlayView(self, cellForRowAtIndexPath: indexPath) {
+        if let cell = delegate?.playerCellForItem!() {
             return cell
         } else {
            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? VideoCollectionViewCell else {
@@ -362,7 +361,7 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.mbOverlayView(self, didSelectRowAtIndexPath: indexPath)
+        delegate?.playerDidSelectItem!(indexPath)
         if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
           videoPlayerView?.loadVideo(url)
         }
