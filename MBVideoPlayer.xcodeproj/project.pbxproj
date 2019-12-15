@@ -17,6 +17,7 @@
 		250109BD239ABC2F0083F142 /* MBVideoPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109BC239ABC2F0083F142 /* MBVideoPlayerUITests.swift */; };
 		250109CB239ABC670083F142 /* MBVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109CA239ABC670083F142 /* MBVideoPlayerView.swift */; };
 		250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */; };
+		25CD267923A6C51600634C0B /* MBTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CD267823A6C51600634C0B /* MBTheme.swift */; };
 		4628F0FB23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4628F0FA23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift */; };
 		46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE1239E1B0D00793264 /* PlayerItem.swift */; };
 		46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */; };
@@ -59,6 +60,7 @@
 		250109BE239ABC2F0083F142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		250109CA239ABC670083F142 /* MBVideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerView.swift; sourceTree = "<group>"; };
 		250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerControls.swift; sourceTree = "<group>"; };
+		25CD267823A6C51600634C0B /* MBTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTheme.swift; sourceTree = "<group>"; };
 		4628F0FA23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerHeaderView.swift; sourceTree = "<group>"; };
 		46C44CE1239E1B0D00793264 /* PlayerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerItem.swift; sourceTree = "<group>"; };
 		46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerDelegates.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				46C44CE7239E1BFD00793264 /* VideoCollectionViewCell.swift */,
 				46C44CE9239E601300793264 /* MBConfiguration.swift */,
 				4628F0FA23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift */,
+				25CD267823A6C51600634C0B /* MBTheme.swift */,
 			);
 			path = MBVideoPlayerView;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 			files = (
 				46C44CE8239E1BFD00793264 /* VideoCollectionViewCell.swift in Sources */,
 				46C44CE6239E1BC400793264 /* CMTime+extension.swift in Sources */,
+				25CD267923A6C51600634C0B /* MBTheme.swift in Sources */,
 				2501099F239ABC2D0083F142 /* ViewController.swift in Sources */,
 				250109CB239ABC670083F142 /* MBVideoPlayerView.swift in Sources */,
 				250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */,

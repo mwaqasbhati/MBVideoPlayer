@@ -9,20 +9,30 @@
 import Foundation
 
 
-struct MBConfiguration {
-    
-    var canShowVideoList = true
-    var canShowTime = true
-    var canShowPlayPause = true
-    var canShowTimeBar = true
-    var canShowFullScreenBtn = true
-    var canShowForwardBack = true
-    var canShowHeader = true
-    var canShowHeaderTitle = true
-    var canShowHeaderOption = true
-    var dimension: PlayerDimension = .embed
+public protocol MBConfiguration {
+    var canShowVideoList: Bool { get }
+    var canShowTime: Bool { get }
+    var canShowPlayPause: Bool { get }
+    var canShowTimeBar: Bool { get }
+    var canShowFullScreenBtn: Bool { get }
+    var canShowForwardBack: Bool { get }
+    var canShowHeader: Bool { get }
+    var canShowHeaderTitle: Bool { get }
+    var canShowHeaderOption: Bool { get }
+    var dimension: PlayerDimension { get }
+    var seekDuration: Float64 { get }
+}
 
-    let seekDuration: Float64 = 15.0
-
-    
+public struct MainConfiguration: MBConfiguration {
+    public var canShowVideoList = true
+    public var canShowTime = true
+    public var canShowPlayPause = true
+    public var canShowTimeBar = true
+    public var canShowFullScreenBtn = true
+    public var canShowForwardBack = true
+    public var canShowHeader = true
+    public var canShowHeaderTitle = true
+    public var canShowHeaderOption = true
+    public var dimension: PlayerDimension = .embed
+    public var seekDuration: Float64 = 15.0
 }

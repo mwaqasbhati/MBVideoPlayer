@@ -10,7 +10,8 @@ import UIKit
 
 class MBVideoPlayerHeaderView: UIView {
     
-    var configuration = MBConfiguration()
+    var configuration: MBConfiguration
+    var theme: MBTheme
 
     // MARK: - Instance Variables
     lazy private var titleLabel: UILabel = {
@@ -46,18 +47,20 @@ class MBVideoPlayerHeaderView: UIView {
     }()
     
     // MARK: - View Initializers
-
-    override init(frame: CGRect) {
-      super.init(frame: frame)
+    required init(configuration: MBConfiguration, theme: MBTheme) {
+        self.configuration = configuration
+        self.theme = theme
+        super.init(frame: .zero)
+        createHeaderView()
     }
+    
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
+        fatalError("init(coder:) has not been implemented")
     }
     func setTitle(_ title: String) {
         titleLabel.text = title
     }
-    func createHeaderViewWith(configuration: MBConfiguration = MBConfiguration()) {
-        self.configuration = configuration
+    private func createHeaderView() {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(controlsStackView)
         controlsStackView.pinEdges(to: self)

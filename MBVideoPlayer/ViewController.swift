@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let playerView = MBVideoPlayerView()
+    let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
 
     @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
     override func viewDidLoad() {
@@ -52,11 +52,6 @@ class ViewController: UIViewController {
 // MARK: - MBPlayerViewDelegate
 
 extension ViewController: MBVideoPlayerViewDelegate {
-    func mbPlayerView(_ playerView: MBVideoPlayerView, resizeAction dimension: PlayerDimension) {
-        
-    }
-    func mbPlayerView(_ playerView: MBVideoPlayerView, playListItemChanged index: Int) {
-        
-    }
+    
 }
 

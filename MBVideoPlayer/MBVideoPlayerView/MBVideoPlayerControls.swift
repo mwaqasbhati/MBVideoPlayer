@@ -106,8 +106,8 @@ class MBVideoPlayerControls: UIView {
     var delegate: MBVideoPlayerControlsDelegate?
     weak var videoPlayerView: MBVideoPlayerView?
     var videoPlayerHeader: MBVideoPlayerHeaderView?
-    var configuration = MBConfiguration()
-
+    var configuration = MainConfiguration()
+    var theme = MainTheme()
     private var topC: NSLayoutConstraint?
     private var bottomC: NSLayoutConstraint?
     private var rightC: NSLayoutConstraint?
@@ -132,7 +132,7 @@ class MBVideoPlayerControls: UIView {
         collectionView.reloadData()
         videoPlayerHeader?.setTitle(currentItem.title)
     }
-    func createOverlayView() {
+    func createOverlayViewWith(configuration: MBConfiguration, theme: MBTheme) {
         
         // activity indicator
         addSubview(activityView)
@@ -165,7 +165,7 @@ class MBVideoPlayerControls: UIView {
         }
         
         if configuration.canShowFullScreenBtn {
-            addResizeBtnWith(fullTimeLabel)
+            addResizeBtn()
         }
         
         if configuration.canShowVideoList {
@@ -173,15 +173,24 @@ class MBVideoPlayerControls: UIView {
         }
 
         if configuration.canShowHeader {
-            videoPlayerHeader = MBVideoPlayerHeaderView()
+            videoPlayerHeader = MBVideoPlayerHeaderView(configuration: configuration, theme: theme)
             addSubview(videoPlayerHeader!)
-            videoPlayerHeader?.createHeaderViewWith(configuration: configuration)
             videoPlayerHeader!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
             videoPlayerHeader!.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
             videoPlayerHeader!.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
         }
         
-        
+        applyTheme(theme)
+    }
+    private func applyTheme(_ theme: MBTheme) {
+        playButton.tintColor = theme.buttonTintColor
+        forwardButton.tintColor = theme.buttonTintColor
+        backButton.tintColor = theme.buttonTintColor
+        resizeButton.tintColor = theme.buttonTintColor
+        fullTimeLabel.textColor = theme.timeLabelTextColor
+        playerTimeLabel.textColor = theme.timeLabelTextColor
+        seekSlider.tintColor = theme.sliderTintColor
+        seekSlider.thumbTintColor = theme.sliderThumbColor
     }
     func videoDidStart() {
         playerTimeLabel.text = CMTime.zero.description
@@ -288,7 +297,7 @@ class MBVideoPlayerControls: UIView {
             self.layoutIfNeeded()
         }
     }
-    private func addResizeBtnWith(_ fullTimeLabel: UILabel?) {
+    private func addResizeBtn() {
         // resize button
         bottomControlsStackView.addArrangedSubview(resizeButton)
         resizeButton.widthAnchor.constraint(equalToConstant: 30.0).isActive = true

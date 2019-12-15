@@ -9,7 +9,7 @@
 import Foundation
 import AVKit
 
-enum PlayerDimension {
+public enum PlayerDimension {
     case embed
     case fullScreen
 }
@@ -22,13 +22,14 @@ open class MBVideoPlayerView: UIView {
     // MARK: - Instance Variables
 
     private var isShowOverlay: Bool = true
-    private var dimension: PlayerDimension = .embed
     private var task: DispatchWorkItem? = nil
     private var queuePlayer: AVQueuePlayer!
     private var playerLayer: AVPlayerLayer!
 
     let overlayView = MBVideoPlayerControls()
     var delegate: MBVideoPlayerViewDelegate?
+    var configuration: MBConfiguration = MainConfiguration()
+    var theme: MBTheme = MainTheme()
     var mainContainerView: UIView?
             
     var totalDuration: CMTime? {
@@ -49,7 +50,16 @@ open class MBVideoPlayerView: UIView {
     }()
     
     // MARK: - View Initializers
-
+    required public init(configuration: MBConfiguration?, theme: MBTheme?) {
+        super.init(frame: .zero)
+        if let theme = theme {
+            self.theme = theme
+        }
+        if let configuration = configuration {
+            self.configuration = configuration
+        }
+        setupPlayer()
+    }
     override init(frame: CGRect) {
       super.init(frame: frame)
       setupPlayer()
@@ -81,7 +91,7 @@ open class MBVideoPlayerView: UIView {
         
         isShowOverlay = showOverlay
         if showOverlay {
-            overlayView.createOverlayView()
+            overlayView.createOverlayViewWith(configuration: configuration, theme: theme)
             overlayView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlayView)
             overlayView.backgroundColor = .clear
@@ -110,7 +120,7 @@ open class MBVideoPlayerView: UIView {
 
     }
     @objc func onOrientationChanged() {
-        delegate?.playerOrientationDidChange!(dimension)
+        delegate?.playerOrientationDidChange!(configuration.dimension)
     }
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         if isShowOverlay {
