@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVKit
 
 enum MBVideoPlayerState {
     case readyToPlay
@@ -38,6 +39,15 @@ extension MBVideoPlayerViewDelegate {
 
 // 2- MBVideoPlayerControls
 
-protocol MBVideoPlayerControlsDelegate: MBVideoPlayerViewDelegate { }
+protocol MBVideoPlayerControlsDelegate: MBVideoPlayerViewDelegate where Self: UIView {
+    var totalDuration: CMTime? { get }
+    var currentTime: CMTime? { get }
+    var mainContainerView: UIView? { get set }
+    
+    func loadVideo(_ url: URL)
+    func seekToTime(_ seekTime: CMTime)
+    func playPause(_ isActive: Bool)
+}
+
 
 

@@ -19,6 +19,13 @@ open class MBVideoPlayerView: UIView {
     
     // MARK: - Constants
 
+    var playerStateDidChange: ((MBVideoPlayerState)->())? = nil
+    var playerTimeDidChange: ((TimeInterval, TimeInterval)->())? = nil
+    var playerOrientationDidChange: ((PlayerDimension) -> ())? = nil
+    var playerDidChangeSize: ((PlayerDimension) -> ())? = nil
+    var playerCellForItem: (()->(UICollectionViewCell))? = nil
+    var playerDidSelectItem: ((IndexPath)->())? = nil
+    
     // MARK: - Instance Variables
 
     private var isShowOverlay: Bool = true
@@ -75,11 +82,12 @@ open class MBVideoPlayerView: UIView {
     }
     // MARK: - Helper Methods
 
-    func setPlayListItemsWith(currentItem: PlayerItem, items: [PlayerItem], fullView: UIView? = nil) {
+    func setPlayListItemsWith(delegate: MBVideoPlayerViewDelegate, currentItem: PlayerItem, items: [PlayerItem], fullView: UIView? = nil) {
         translatesAutoresizingMaskIntoConstraints = false
         playerLayer.frame = self.bounds
         mainContainerView = fullView
-        overlayView.videoPlayerView = self
+        self.delegate = delegate
+        addObservers()
         if let url = URL(string: currentItem.url) {
             loadVideo(url)
         }
@@ -94,6 +102,7 @@ open class MBVideoPlayerView: UIView {
             overlayView.createOverlayViewWith(configuration: configuration, theme: theme)
             overlayView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlayView)
+            overlayView.delegate = self
             overlayView.backgroundColor = .clear
             overlayView.pinEdges(to: self)
         }
@@ -120,7 +129,9 @@ open class MBVideoPlayerView: UIView {
 
     }
     @objc func onOrientationChanged() {
-        delegate?.playerOrientationDidChange!(configuration.dimension)
+        if let didChangeOrientation = playerOrientationDidChange {
+            didChangeOrientation(configuration.dimension)
+        }
     }
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
         if isShowOverlay {
@@ -140,21 +151,6 @@ open class MBVideoPlayerView: UIView {
         isShowOverlay = !isShowOverlay
     }
     
-    func loadVideo(_ url: URL) {
-        queuePlayer.removeAllItems()
-        let playerItem = AVPlayerItem.init(url: url)
-        queuePlayer.insert(playerItem, after: nil)
-        overlayView.videoDidStart()
-        delegate?.playerStateDidChange!(.readyToPlay)
-    }
-    
-    func seekToTime(_ seekTime: CMTime) {
-        print(seekTime)
-        self.queuePlayer.currentItem?.seek(to: seekTime, completionHandler: nil)
-    }
-    func playPause(_ isActive: Bool) {
-        isActive ? queuePlayer.play() : queuePlayer.pause()
-    }
     private func createPlayerView() {
         queuePlayer = AVQueuePlayer()
         queuePlayer.addObserver(overlayView, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
@@ -167,25 +163,29 @@ open class MBVideoPlayerView: UIView {
 }
 
 extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, cellForRowAtIndexPath: IndexPath) -> UICollectionViewCell? {
-        return delegate?.playerCellForItem!()
+    
+    func addObservers() {
+     //   playerStateDidChange = delegate?.playerStateDidChange
+     //   playerTimeDidChange = delegate?.playerTimeDidChange
+    //    playerOrientationDidChange = delegate?.playerOrientationDidChange
+     //   playerDidChangeSize = delegate?.playerDidChangeSize
+     //   playerCellForItem = delegate?.playerCellForItem
+     //   playerDidSelectItem = delegate?.playerDidSelectItem
     }
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, didSelectRowAtIndexPath: IndexPath) {
-        delegate?.playerDidSelectItem!(didSelectRowAtIndexPath)
+    func loadVideo(_ url: URL) {
+        queuePlayer.removeAllItems()
+        let playerItem = AVPlayerItem.init(url: url)
+        queuePlayer.insert(playerItem, after: nil)
+        overlayView.videoDidStart()
+        playerStateDidChange!(.readyToPlay)
     }
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, resizeAction dimension: PlayerDimension) {
-        switch dimension {
-        case .embed:
-            playerLayer.frame = frame
-        case .fullScreen:
-            playerLayer.frame = bounds
-        }
+    
+    func seekToTime(_ seekTime: CMTime) {
+        print(seekTime)
+        self.queuePlayer.currentItem?.seek(to: seekTime, completionHandler: nil)
     }
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerStateDidChange: MBVideoPlayerState) {
-        delegate?.playerStateDidChange!(playerStateDidChange)
-    }
-    func mbOverlayView(_ overlayView: MBVideoPlayerControls, playerTimeDidChange newTime: TimeInterval, totalDuration: TimeInterval) {
-        delegate?.playerTimeDidChange!(newTime, totalDuration)
+    func playPause(_ isActive: Bool) {
+        isActive ? queuePlayer.play() : queuePlayer.pause()
     }
 }
 

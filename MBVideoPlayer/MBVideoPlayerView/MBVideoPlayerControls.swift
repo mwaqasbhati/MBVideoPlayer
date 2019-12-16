@@ -19,28 +19,24 @@ class MBVideoPlayerControls: UIView {
     lazy private var playButton: UIButton! = {
        let playButton = UIButton()
         playButton.translatesAutoresizingMaskIntoConstraints = false
-        playButton.setImage(Controls.playpause(isActive).image, for: .normal)
         playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
         return playButton
     }()
     lazy private var backButton: UIButton! = {
         let backwardButton = UIButton()
         backwardButton.translatesAutoresizingMaskIntoConstraints = false
-        backwardButton.setImage(Controls.back.image, for: .normal)
         backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
         return backwardButton
     }()
     lazy private var forwardButton: UIButton! = {
        let forwardButton = UIButton()
         forwardButton.translatesAutoresizingMaskIntoConstraints = false
-        forwardButton.setImage(Controls.forward.image, for: .normal)
         forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
         return forwardButton
     }()
     lazy private var resizeButton: UIButton = {
         let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
-        resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
         return resizeButton
     }()
@@ -48,15 +44,13 @@ class MBVideoPlayerControls: UIView {
         let label = UILabel()
         label.text = CMTime.zero.description
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .blue
         label.textAlignment = .center
         return label
     }()
     lazy private var fullTimeLabel: UILabel = {
        let timeLabel = UILabel()
-        timeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
+        timeLabel.text = delegate?.totalDuration?.description ?? CMTime.zero.description
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
-        timeLabel.textColor = .blue
         timeLabel.textAlignment = .center
         return timeLabel
     }()
@@ -69,7 +63,6 @@ class MBVideoPlayerControls: UIView {
     lazy private var activityView: UIActivityIndicatorView = {
         let activity = UIActivityIndicatorView(style: .large)
         activity.translatesAutoresizingMaskIntoConstraints = false
-        activity.color = .white
         activity.startAnimating()
         return activity
     }()
@@ -104,10 +97,10 @@ class MBVideoPlayerControls: UIView {
     private var isActive: Bool = false
 
     var delegate: MBVideoPlayerControlsDelegate?
-    weak var videoPlayerView: MBVideoPlayerView?
     var videoPlayerHeader: MBVideoPlayerHeaderView?
     var configuration = MainConfiguration()
     var theme = MainTheme()
+    
     private var topC: NSLayoutConstraint?
     private var bottomC: NSLayoutConstraint?
     private var rightC: NSLayoutConstraint?
@@ -191,11 +184,17 @@ class MBVideoPlayerControls: UIView {
         playerTimeLabel.textColor = theme.timeLabelTextColor
         seekSlider.tintColor = theme.sliderTintColor
         seekSlider.thumbTintColor = theme.sliderThumbColor
+        activityView.color = theme.activityViewColor
+        collectionView.backgroundColor = theme.playListItemsBackgroundColor
+        resizeButton.setImage(theme.resizeButtonImage, for: .normal)
+        playButton.setImage((isActive ? theme.pauseButtonImage : theme.playButtonImage), for: .normal)
+        forwardButton.setImage(theme.forwardButtonImage, for: .normal)
+        backButton.setImage(theme.backButtonImage, for: .normal)
     }
     func videoDidStart() {
         playerTimeLabel.text = CMTime.zero.description
         seekSlider.value = 0.0
-        fullTimeLabel.text = videoPlayerView?.totalDuration?.description ?? CMTime.zero.description
+        fullTimeLabel.text = delegate?.totalDuration?.description ?? CMTime.zero.description
     }
     func videoDidChange(_ time: CMTime) {
         playerTimeLabel.text = time.description
@@ -221,22 +220,22 @@ class MBVideoPlayerControls: UIView {
     // MARK: - Actions
     
     @objc func changeSeekSlider(_ sender: UISlider) {
-        guard let totalDuration = videoPlayerView?.totalDuration else { return }
+        guard let totalDuration = delegate?.totalDuration else { return }
         let seekTime = CMTime(seconds: Double(sender.value) * totalDuration.asDouble, preferredTimescale: 100)
         playerTimeLabel.text = seekTime.description
-        self.videoPlayerView?.seekToTime(seekTime)
+        delegate?.seekToTime(seekTime)
         delegate?.playerTimeDidChange!(seekTime.asDouble, totalDuration.asDouble)
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
         isActive = !isActive
         playButton.setImage(Controls.playpause(isActive).image, for: .normal)
-        videoPlayerView?.playPause(isActive)
+        delegate?.playPause(isActive)
         print("clicked -> \(isActive)")
     }
     
     @objc func clickBackButton(_ sender: UIButton) {
-        guard let totalDuration = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
+        guard let totalDuration = delegate?.totalDuration, let current = delegate?.currentTime else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
         var newTime = playerCurrentTime - configuration.seekDuration
 
@@ -244,20 +243,20 @@ class MBVideoPlayerControls: UIView {
             newTime = 0
         }
         let time2: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
-        videoPlayerView?.seekToTime(time2)
+        delegate?.seekToTime(time2)
         playerTimeLabel.text = time2.description
         seekSlider.value = time2.asFloat / totalDuration.asFloat
         delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
-        guard let totalDuration  = videoPlayerView?.totalDuration, let current = videoPlayerView?.currentTime else { return }
+        guard let totalDuration  = delegate?.totalDuration, let current = delegate?.currentTime else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
         let newTime = playerCurrentTime + configuration.seekDuration
 
         if newTime < CMTimeGetSeconds(totalDuration) {
             let time2: CMTime = CMTimeMake(value: Int64(newTime * 1000 as Float64), timescale: 1000)
-            videoPlayerView?.seekToTime(time2)
+            delegate?.seekToTime(time2)
             playerTimeLabel.text = time2.description
             seekSlider.value = time2.asFloat / totalDuration.asFloat
             delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
@@ -269,13 +268,13 @@ class MBVideoPlayerControls: UIView {
 
         switch configuration.dimension {
         case .embed:
-            if let _ = videoPlayerView?.mainContainerView?.bounds {
+            if let _ = delegate?.mainContainerView?.bounds {
                 playListStackView.isHidden = false
-                if let view = videoPlayerView?.mainContainerView {
-                   leftC = videoPlayerView?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
-                   rightC = videoPlayerView?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-                   topC = videoPlayerView?.topAnchor.constraint(equalTo: view.topAnchor)
-                   bottomC = videoPlayerView?.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                if let view = delegate?.mainContainerView {
+                   leftC = delegate?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+                   rightC = delegate?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                   topC = delegate?.topAnchor.constraint(equalTo: view.topAnchor)
+                   bottomC = delegate?.bottomAnchor.constraint(equalTo: view.bottomAnchor)
                     if let leftC = leftC, let rightC = rightC, let bottomC = bottomC, let topC = topC {
                         NSLayoutConstraint.activate([leftC, rightC, topC, bottomC])
                         layoutIfNeeded()
@@ -359,20 +358,20 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
         return playerItems?.count ?? 0
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = delegate?.playerCellForItem!() {
-            return cell
+        if let cell = delegate?.playerCellForItem {
+            return cell()
         } else {
            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? VideoCollectionViewCell else {
                return UICollectionViewCell()
            }
-           cell.setData(playerItems?[indexPath.row])
+            cell.setData(playerItems?[indexPath.row], theme: theme)
            return cell
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         delegate?.playerDidSelectItem!(indexPath)
         if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
-          videoPlayerView?.loadVideo(url)
+          delegate?.loadVideo(url)
         }
     }
 }

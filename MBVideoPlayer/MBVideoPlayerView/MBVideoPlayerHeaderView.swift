@@ -10,10 +10,10 @@ import UIKit
 
 class MBVideoPlayerHeaderView: UIView {
     
+    // MARK: - Instance Variables
     var configuration: MBConfiguration
     var theme: MBTheme
 
-    // MARK: - Instance Variables
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -76,8 +76,14 @@ class MBVideoPlayerHeaderView: UIView {
         if configuration.canShowHeaderOption {
             addOptions()
         }
+        
+        applyTheme(theme)
     }
-    
+    private func applyTheme(_ theme: MBTheme) {
+        optionsButton.setImage(theme.optionsButtonImage, for: .normal)
+        titleLabel.textColor = theme.playListCurrentItemTextColor
+        titleLabel.font = theme.playListCurrentItemFont
+    }
     private func addTitleLabel() {
         controlsStackView.addArrangedSubview(titleLabel)
     }

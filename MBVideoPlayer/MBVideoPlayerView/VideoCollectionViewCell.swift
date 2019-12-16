@@ -44,10 +44,15 @@ class VideoCollectionViewCell: UICollectionViewCell {
         titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 5).isActive = true
         titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor, constant: 5).isActive = true
     }
-    func setData(_ playListItem: PlayerItem?) {
+    private func applyTheme(_ theme: MBTheme) {
+        titleLabel.textColor = theme.playListItemsTextColor
+        titleLabel.font = theme.playListItemsFont
+    }
+    func setData(_ playListItem: PlayerItem?, theme: MBTheme) {
         guard let playListItem = playListItem else {
             return
         }
         titleLabel.text = playListItem.title
+        applyTheme(theme)
     }
 }

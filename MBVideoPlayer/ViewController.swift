@@ -8,10 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, MBVideoPlayerViewDelegate {
 
     let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
-
+    
     @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,18 +23,17 @@ class ViewController: UIViewController {
                       "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8",
                       "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"]
         
-      //  playerView.delegate = self
-      //  view.addSubview(playerView)
-      //  playerView.pinEdges(to: self.view)
+        playerView.playerStateDidChange = { (state) in
+            
+        }
+        playerView.playerOrientationDidChange = { (orientation) in
+        
+        }
         let items = videos.map({ (video) -> PlayerItem in
             return PlayerItem(title: "Some Test Title", url: video, thumbnail: "")
         })
         if let item = items.first {
-            videoPlayerView.setPlayListItemsWith(currentItem: item, items: items, fullView: view)
-        }
-        
-        videoPlayerView.delegate?.playerStateDidChange = { (state) in
-            
+            playerView.setPlayListItemsWith(delegate: self, currentItem: item, items: items, fullView: view)
         }
     }
     
@@ -51,7 +50,7 @@ class ViewController: UIViewController {
 
 // MARK: - MBPlayerViewDelegate
 
-extension ViewController: MBVideoPlayerViewDelegate {
-    
-}
+//extension ViewController: MBVideoPlayerViewDelegate {
+//
+//}
 
