@@ -8,50 +8,59 @@
 
 import UIKit
 
-class ViewController: UIViewController, MBVideoPlayerViewDelegate {
-
-    //let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
+class ViewController: UIViewController {
     
-    @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+   // @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let videos = ["http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8",
-                      "https://content.jwplatform.com/manifests/yp34SRmf.m3u8",
-                      "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
-                      "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8",
-                      "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"]
+        let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
+
+        playerView.playerDidRegisterCell = { () -> (cellIdentifier: String, cell: UICollectionViewCell.Type) in
+            return ("videoCellId", VideoCollectionViewCell.self)
+        }
         
-        videoPlayerView.playerStateDidChange = { (state) in
+        let playerItems = [
+            PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
+            PlayerItem(title: "Driving a Cycle experience.", url: "https://content.jwplatform.com/manifests/yp34SRmf.m3u8", thumbnail: "2"),
+            PlayerItem(title: "The Durian Open Movie Project.", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8", thumbnail: "3"),
+            PlayerItem(title: "Table Ronde.", url: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8", thumbnail: "4"),
+            PlayerItem(title: "What is this event? ... parker.", url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", thumbnail: "5")
+        ]
+        if let currentItem = playerItems.first {
+            playerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
+        }
+        view.addSubview(playerView)
+        playerView.pinEdges(to: view)
+        
+        playerView.playerStateDidChange = { (state) in
             
         }
-        videoPlayerView.playerOrientationDidChange = { (orientation) in
+        playerView.playerOrientationDidChange = { (orientation) in
         
         }
-        let items = videos.map({ (video) -> PlayerItem in
-            return PlayerItem(title: "Some Test Title", url: video, thumbnail: "")
-        })
-        if let item = items.first {
-            videoPlayerView.setPlayListItemsWith(delegate: self, currentItem: item, items: items, fullView: view)
+        playerView.playerDidChangeSize = { (dimension) in
+            
         }
-    }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        if UIDevice.current.orientation.isLandscape {
-            print("Landscape")
-        } else {
-            print("Portrait")
+        playerView.playerTimeDidChange = { (newTime, duration) in
+            
         }
+        playerView.playerCellForItem = { (collectioView, indexPath) -> UICollectionViewCell in
+            let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId", for: indexPath) as! VideoCollectionViewCell
+            cell.setData(playerItems[indexPath.row])
+            return cell
+        }
+        playerView.playerDidSelectItem = { (index) in
+            
+        }
+        playerView.didSelectOptions = {
+            
+        }
+        
     }
-    
-
+        
 }
 
-// MARK: - MBPlayerViewDelegate
-
-//extension ViewController: MBVideoPlayerViewDelegate {
-//
-//}
 

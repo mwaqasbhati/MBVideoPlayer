@@ -13,6 +13,7 @@ class MBVideoPlayerHeaderView: UIView {
     // MARK: - Instance Variables
     var configuration: MBConfiguration
     var theme: MBTheme
+    var delegate: MBVideoPlayerControlsDelegate?
 
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
@@ -47,9 +48,11 @@ class MBVideoPlayerHeaderView: UIView {
     }()
     
     // MARK: - View Initializers
-    required init(configuration: MBConfiguration, theme: MBTheme) {
+    
+    required init(configuration: MBConfiguration, theme: MBTheme, delegate: MBVideoPlayerControlsDelegate?) {
         self.configuration = configuration
         self.theme = theme
+        self.delegate = delegate
         super.init(frame: .zero)
         createHeaderView()
     }
@@ -57,18 +60,22 @@ class MBVideoPlayerHeaderView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     func setTitle(_ title: String) {
         titleLabel.text = title
     }
+    
     private func createHeaderView() {
+        
         translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(backgroundView)
         addSubview(controlsStackView)
+        
+        backgroundView.pinEdges(to: controlsStackView)
         controlsStackView.pinEdges(to: self)
         controlsStackView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
-        
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(backgroundView)
-        backgroundView.pinEdges(to: controlsStackView)
         
         if configuration.canShowHeaderTitle {
             addTitleLabel()
@@ -79,15 +86,18 @@ class MBVideoPlayerHeaderView: UIView {
         
         applyTheme(theme)
     }
+    
     private func applyTheme(_ theme: MBTheme) {
         optionsButton.setImage(theme.optionsButtonImage, for: .normal)
         optionsButton.tintColor = theme.buttonTintColor
         titleLabel.textColor = theme.playListCurrentItemTextColor
         titleLabel.font = theme.playListCurrentItemFont
     }
+    
     private func addTitleLabel() {
         controlsStackView.addArrangedSubview(titleLabel)
     }
+    
     private func addOptions() {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +109,11 @@ class MBVideoPlayerHeaderView: UIView {
         optionsButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         optionsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     }
+    
     @objc func optionsBtnPressed(_ sender: UIButton) {
-        
+        if let player = delegate?.didSelectOptions {
+            player()
+        }
     }
+    
 }

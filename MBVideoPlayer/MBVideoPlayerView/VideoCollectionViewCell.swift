@@ -15,6 +15,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 10.0
         imageView.contentMode = .scaleAspectFill
+        imageView.alpha = 0.8
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -22,8 +23,8 @@ class VideoCollectionViewCell: UICollectionViewCell {
        let label = UILabel()
        label.translatesAutoresizingMaskIntoConstraints = false
        label.textColor = .white
-       label.textAlignment = .center
-       label.numberOfLines = 0
+       label.textAlignment = .left
+       label.numberOfLines = 1
        return label
     }()
     override init(frame: CGRect) {
@@ -48,11 +49,12 @@ class VideoCollectionViewCell: UICollectionViewCell {
         titleLabel.textColor = theme.playListItemsTextColor
         titleLabel.font = theme.playListItemsFont
     }
-    func setData(_ playListItem: PlayerItem?, theme: MBTheme) {
+    func setData(_ playListItem: PlayerItem?, theme: MBTheme = MainTheme()) {
         guard let playListItem = playListItem else {
             return
         }
         titleLabel.text = playListItem.title
+        videoThumbnail.image = UIImage(named: playListItem.thumbnail)
         applyTheme(theme)
     }
 }

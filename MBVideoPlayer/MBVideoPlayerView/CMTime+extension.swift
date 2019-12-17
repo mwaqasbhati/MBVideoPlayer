@@ -9,6 +9,8 @@
 import Foundation
 import AVKit
 
+/// CMTIme: it converts CMTime to double, float and format the CMTime object to representable on the UI.
+
 extension CMTime {
     var asDouble: Double {
         get {
@@ -31,7 +33,10 @@ extension CMTime: CustomStringConvertible {
     }
 }
 
+/// Controls: This enum keeps images of the constols according to their state.
+
 enum Controls {
+    
     case playpause(Bool)
     case forward
     case back

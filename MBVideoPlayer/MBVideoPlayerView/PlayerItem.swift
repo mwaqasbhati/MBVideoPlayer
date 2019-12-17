@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// data model for video playlist item
 
 struct PlayerItem {
     let title: String

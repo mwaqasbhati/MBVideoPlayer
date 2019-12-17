@@ -13,13 +13,6 @@ import AVKit
 class MBVideoPlayerControls: UIView {
     
     // MARK: - Constants
-
-    var playerStateDidChange: ((MBVideoPlayerState)->())? = nil
-    var playerTimeDidChange: ((TimeInterval, TimeInterval)->())? = nil
-    var playerOrientationDidChange: ((PlayerDimension) -> ())? = nil
-    var playerDidChangeSize: ((PlayerDimension) -> ())? = nil
-    var playerCellForItem: (()->(UICollectionViewCell))? = nil
-    var playerDidSelectItem: ((IndexPath)->())? = nil
     
     // MARK: - Instance Variables
 
@@ -29,24 +22,28 @@ class MBVideoPlayerControls: UIView {
         playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
         return playButton
     }()
+    
     lazy private var backButton: UIButton! = {
         let backwardButton = UIButton()
         backwardButton.translatesAutoresizingMaskIntoConstraints = false
         backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
         return backwardButton
     }()
+    
     lazy private var forwardButton: UIButton! = {
        let forwardButton = UIButton()
         forwardButton.translatesAutoresizingMaskIntoConstraints = false
         forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
         return forwardButton
     }()
+    
     lazy private var resizeButton: UIButton = {
         let resizeButton = UIButton()
         resizeButton.translatesAutoresizingMaskIntoConstraints = false
         resizeButton.addTarget(self, action: #selector(self.resizeButtonTapped), for: .touchUpInside)
         return resizeButton
     }()
+    
     lazy private var playerTimeLabel: UILabel = {
         let label = UILabel()
         label.text = CMTime.zero.description
@@ -54,6 +51,7 @@ class MBVideoPlayerControls: UIView {
         label.textAlignment = .center
         return label
     }()
+    
     lazy private var fullTimeLabel: UILabel = {
        let timeLabel = UILabel()
         timeLabel.text = delegate?.totalDuration?.description ?? CMTime.zero.description
@@ -61,18 +59,21 @@ class MBVideoPlayerControls: UIView {
         timeLabel.textAlignment = .center
         return timeLabel
     }()
+    
     lazy private var seekSlider: UISlider = {
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.addTarget(self, action: #selector(self.changeSeekSlider(_:)), for: .valueChanged)
         return slider
     }()
+    
     lazy private var activityView: UIActivityIndicatorView = {
         let activity = UIActivityIndicatorView(style: .large)
         activity.translatesAutoresizingMaskIntoConstraints = false
         activity.startAnimating()
         return activity
     }()
+    
     lazy private var playListStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.isHidden = true
@@ -80,19 +81,20 @@ class MBVideoPlayerControls: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
     lazy private var bottomControlsStackView: UIStackView  = {
        let stackView = UIStackView()
        stackView.axis = .horizontal
        stackView.translatesAutoresizingMaskIntoConstraints = false
        return stackView
     }()
+    
     private lazy var collectionView: UICollectionView =  {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 100, height: 100)
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -100,12 +102,17 @@ class MBVideoPlayerControls: UIView {
     }()
     
     private var playerItems: [PlayerItem]?
+    
     private var currentItem: PlayerItem?
+    
     private var isActive: Bool = false
 
-    weak var delegate: MBVideoPlayerControlsDelegate?
+    var delegate: MBVideoPlayerControlsDelegate?
+    
     var videoPlayerHeader: MBVideoPlayerHeaderView?
+    
     var configuration = MainConfiguration()
+    
     var theme = MainTheme()
     
     private var topC: NSLayoutConstraint?
@@ -114,24 +121,33 @@ class MBVideoPlayerControls: UIView {
     private var leftC: NSLayoutConstraint?
 
     private var cellId = "videoCellId"
-
-    
     
     // MARK: - View Initializers
 
     override init(frame: CGRect) {
       super.init(frame: frame)
     }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func setPlayListWith(currentItem: PlayerItem, items: [PlayerItem]) {
+    func setPlayList(currentItem: PlayerItem, items: [PlayerItem]) {
+        
+        if let player = delegate?.playerDidRegisterCell {
+            let attributes = player()
+            collectionView.register(attributes.cell.self, forCellWithReuseIdentifier: attributes.cellIdentifier)
+        } else {
+            collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        }
+        
         playerItems = items
         self.currentItem = currentItem
         collectionView.reloadData()
         videoPlayerHeader?.setTitle(currentItem.title)
+        
     }
+    
     func createOverlayViewWith(configuration: MBConfiguration, theme: MBTheme) {
         
         // activity indicator
@@ -173,7 +189,7 @@ class MBVideoPlayerControls: UIView {
         }
 
         if configuration.canShowHeader {
-            videoPlayerHeader = MBVideoPlayerHeaderView(configuration: configuration, theme: theme)
+            videoPlayerHeader = MBVideoPlayerHeaderView(configuration: configuration, theme: theme, delegate: delegate)
             addSubview(videoPlayerHeader!)
             videoPlayerHeader!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
             videoPlayerHeader!.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
@@ -182,6 +198,7 @@ class MBVideoPlayerControls: UIView {
         
         applyTheme(theme)
     }
+    
     private func applyTheme(_ theme: MBTheme) {
         playButton.tintColor = theme.buttonTintColor
         forwardButton.tintColor = theme.buttonTintColor
@@ -198,14 +215,17 @@ class MBVideoPlayerControls: UIView {
         forwardButton.setImage(theme.forwardButtonImage, for: .normal)
         backButton.setImage(theme.backButtonImage, for: .normal)
     }
+    
     func videoDidStart() {
         playerTimeLabel.text = CMTime.zero.description
         seekSlider.value = 0.0
         fullTimeLabel.text = delegate?.totalDuration?.description ?? CMTime.zero.description
     }
+    
     func videoDidChange(_ time: CMTime) {
         playerTimeLabel.text = time.description
     }
+    
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "timeControlStatus", let change = change, let newValue = change[NSKeyValueChangeKey.newKey] as? Int, let oldValue = change[NSKeyValueChangeKey.oldKey] as? Int {
             let oldStatus = AVPlayer.TimeControlStatus(rawValue: oldValue)
@@ -246,7 +266,7 @@ class MBVideoPlayerControls: UIView {
     }
     
     @objc func clickBackButton(_ sender: UIButton) {
-        guard let totalDuration = delegate?.totalDuration, let current = delegate?.currentTime else { return }
+        guard let totalDuration = delegate?.totalDuration, let current = delegate?.currentTime, isActive else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
         var newTime = playerCurrentTime - configuration.seekDuration
 
@@ -263,7 +283,7 @@ class MBVideoPlayerControls: UIView {
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
-        guard let totalDuration  = delegate?.totalDuration, let current = delegate?.currentTime else { return }
+        guard let totalDuration  = delegate?.totalDuration, let current = delegate?.currentTime, isActive else { return }
         let playerCurrentTime = CMTimeGetSeconds(current)
         let newTime = playerCurrentTime + configuration.seekDuration
 
@@ -285,9 +305,9 @@ class MBVideoPlayerControls: UIView {
 
         switch configuration.dimension {
         case .embed:
-            if let _ = delegate?.mainContainerView?.bounds {
+            if let _ = delegate?.fullScreenView?.bounds {
                 playListStackView.isHidden = false
-                if let view = delegate?.mainContainerView {
+                if let view = delegate?.fullScreenView {
                    leftC = delegate?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = delegate?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
                    topC = delegate?.topAnchor.constraint(equalTo: view.topAnchor)
@@ -313,35 +333,41 @@ class MBVideoPlayerControls: UIView {
             self.layoutIfNeeded()
         }
     }
+    
     private func addResizeBtn() {
         // resize button
         bottomControlsStackView.addArrangedSubview(resizeButton)
         resizeButton.widthAnchor.constraint(equalToConstant: 30.0).isActive = true
         resizeButton.heightAnchor.constraint(equalToConstant: 30.0).isActive = true
     }
+    
     private func addTimeBar() {
           // seek slider
           bottomControlsStackView.addArrangedSubview(seekSlider)
           seekSlider.centerYAnchor.constraint(equalTo: bottomControlsStackView.centerYAnchor, constant: 0).isActive = true
     }
+    
     private func addTimeLabel() {
         // time label
         bottomControlsStackView.addArrangedSubview(playerTimeLabel)
         playerTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
         playerTimeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
+    
     private func addTotalTimeLabel() {
         // total time label
         bottomControlsStackView.addArrangedSubview(fullTimeLabel)
         fullTimeLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
         fullTimeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
+    
     private func addPlayPauseButton() {
         // play/pause button
         addSubview(playButton)
         playButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         playButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
+    
     private func addForwardBackwardButton() {
         // backward button
         addSubview(backButton)
@@ -353,6 +379,7 @@ class MBVideoPlayerControls: UIView {
         forwardButton.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 25.0).isActive = true
         forwardButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor).isActive = true
     }
+    
     private func addPlayList() {
         // videos stackview
         addSubview(playListStackView)
@@ -369,14 +396,15 @@ class MBVideoPlayerControls: UIView {
 
 // MARK: - UICollectionView Delegate & Datasource
 
-extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataSource {
+extension MBVideoPlayerControls: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return playerItems?.count ?? 0
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = delegate?.playerCellForItem {
-            return cell()
+            return cell(collectionView, indexPath)
         } else {
            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? VideoCollectionViewCell else {
                return UICollectionViewCell()
@@ -385,15 +413,21 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
            return cell
         }
     }
+    
+}
+
+extension MBVideoPlayerControls: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let player = delegate?.playerDidSelectItem {
             player(indexPath)
         }
-        if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
-          delegate?.loadVideo(url)
+        if let url = URL(string: playerItems?[indexPath.row].url ?? ""), let title = playerItems?[indexPath.row].title {
+            delegate?.didLoadVideo(url)
+            videoPlayerHeader?.setTitle(title)
         }
     }
+    
 }
-
 
 

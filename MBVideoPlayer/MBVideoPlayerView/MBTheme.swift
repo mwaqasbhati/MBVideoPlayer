@@ -8,6 +8,8 @@
 
 import UIKit
 
+/// MBTheme: it controls player componenets fonts, colors and images
+
 public protocol MBTheme {
     var buttonTintColor: UIColor { get }
     var headerBackgroundColor: UIColor { get }
@@ -42,9 +44,9 @@ public struct MainTheme: MBTheme {
     public var activityViewColor: UIColor = .white
     public var playListItemsBackgroundColor: UIColor = .clear
     public var playListCurrentItemFont = UIFont.systemFont(ofSize: 17.0)
-    public var playListItemsFont = UIFont.systemFont(ofSize: 17.0)
+    public var playListItemsFont = UIFont.systemFont(ofSize: 12.0)
 
-    public var resizeButtonImage: UIImage! = Controls.resize(.embed).image
+    public var resizeButtonImage: UIImage! = Controls.resize(.fullScreen).image
     public var playButtonImage: UIImage! = Controls.playpause(false).image
     public var pauseButtonImage: UIImage! = Controls.playpause(true).image
     public var forwardButtonImage: UIImage! = Controls.forward.image

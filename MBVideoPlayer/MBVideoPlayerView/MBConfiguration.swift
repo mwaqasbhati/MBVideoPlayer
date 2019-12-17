@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// MBConfiguration: it controls player configuration .
 
 public protocol MBConfiguration {
     var canShowVideoList: Bool { get }
@@ -19,6 +20,7 @@ public protocol MBConfiguration {
     var canShowHeader: Bool { get }
     var canShowHeaderTitle: Bool { get }
     var canShowHeaderOption: Bool { get }
+    var isShowOverlay: Bool { get set }
     var dimension: PlayerDimension { get }
     var seekDuration: Float64 { get }
 }
@@ -33,6 +35,7 @@ public struct MainConfiguration: MBConfiguration {
     public var canShowHeader = true
     public var canShowHeaderTitle = true
     public var canShowHeaderOption = true
+    public var isShowOverlay: Bool = true
     public var dimension: PlayerDimension = .embed
     public var seekDuration: Float64 = 15.0
 }
