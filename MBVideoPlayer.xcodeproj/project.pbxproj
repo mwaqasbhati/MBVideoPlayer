@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2501099B239ABC2D0083F142 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2501099A239ABC2D0083F142 /* AppDelegate.swift */; };
-		2501099D239ABC2D0083F142 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2501099C239ABC2D0083F142 /* SceneDelegate.swift */; };
 		2501099F239ABC2D0083F142 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2501099E239ABC2D0083F142 /* ViewController.swift */; };
 		250109A2239ABC2D0083F142 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 250109A0239ABC2D0083F142 /* Main.storyboard */; };
 		250109A4239ABC2E0083F142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 250109A3239ABC2E0083F142 /* Assets.xcassets */; };
@@ -19,6 +18,7 @@
 		250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */; };
 		25CD267923A6C51600634C0B /* MBTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CD267823A6C51600634C0B /* MBTheme.swift */; };
 		4628F0FB23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4628F0FA23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift */; };
+		4647250323A8EA280032AF72 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4647250223A8EA280032AF72 /* SceneDelegate.swift */; };
 		46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE1239E1B0D00793264 /* PlayerItem.swift */; };
 		46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */; };
 		46C44CE6239E1BC400793264 /* CMTime+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C44CE5239E1BC400793264 /* CMTime+extension.swift */; };
@@ -46,7 +46,6 @@
 /* Begin PBXFileReference section */
 		25010997239ABC2D0083F142 /* MBVideoPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MBVideoPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2501099A239ABC2D0083F142 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2501099C239ABC2D0083F142 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		2501099E239ABC2D0083F142 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		250109A1239ABC2D0083F142 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		250109A3239ABC2E0083F142 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -62,6 +61,7 @@
 		250109CC239B899F0083F142 /* MBVideoPlayerControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerControls.swift; sourceTree = "<group>"; };
 		25CD267823A6C51600634C0B /* MBTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTheme.swift; sourceTree = "<group>"; };
 		4628F0FA23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerHeaderView.swift; sourceTree = "<group>"; };
+		4647250223A8EA280032AF72 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		46C44CE1239E1B0D00793264 /* PlayerItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerItem.swift; sourceTree = "<group>"; };
 		46C44CE3239E1B6600793264 /* MBVideoPlayerDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBVideoPlayerDelegates.swift; sourceTree = "<group>"; };
 		46C44CE5239E1BC400793264 /* CMTime+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+extension.swift"; sourceTree = "<group>"; };
@@ -118,8 +118,8 @@
 			isa = PBXGroup;
 			children = (
 				2501099A239ABC2D0083F142 /* AppDelegate.swift */,
-				2501099C239ABC2D0083F142 /* SceneDelegate.swift */,
 				2501099E239ABC2D0083F142 /* ViewController.swift */,
+				4647250223A8EA280032AF72 /* SceneDelegate.swift */,
 				46C44CE0239E1AEA00793264 /* MBVideoPlayerView */,
 				250109A0239ABC2D0083F142 /* Main.storyboard */,
 				250109A3239ABC2E0083F142 /* Assets.xcassets */,
@@ -301,11 +301,11 @@
 				250109CB239ABC670083F142 /* MBVideoPlayerView.swift in Sources */,
 				250109CD239B899F0083F142 /* MBVideoPlayerControls.swift in Sources */,
 				2501099B239ABC2D0083F142 /* AppDelegate.swift in Sources */,
-				2501099D239ABC2D0083F142 /* SceneDelegate.swift in Sources */,
 				46C44CE4239E1B6600793264 /* MBVideoPlayerDelegates.swift in Sources */,
 				46C44CE2239E1B0D00793264 /* PlayerItem.swift in Sources */,
 				4628F0FB23A64BAC00A99F58 /* MBVideoPlayerHeaderView.swift in Sources */,
 				46C44CEA239E601300793264 /* MBConfiguration.swift in Sources */,
+				4647250323A8EA280032AF72 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,7 +480,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MBVideoPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -498,7 +498,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MBVideoPlayer/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

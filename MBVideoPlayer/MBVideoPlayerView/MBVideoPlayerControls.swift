@@ -14,6 +14,13 @@ class MBVideoPlayerControls: UIView {
     
     // MARK: - Constants
 
+    var playerStateDidChange: ((MBVideoPlayerState)->())? = nil
+    var playerTimeDidChange: ((TimeInterval, TimeInterval)->())? = nil
+    var playerOrientationDidChange: ((PlayerDimension) -> ())? = nil
+    var playerDidChangeSize: ((PlayerDimension) -> ())? = nil
+    var playerCellForItem: (()->(UICollectionViewCell))? = nil
+    var playerDidSelectItem: ((IndexPath)->())? = nil
+    
     // MARK: - Instance Variables
 
     lazy private var playButton: UIButton! = {
@@ -96,7 +103,7 @@ class MBVideoPlayerControls: UIView {
     private var currentItem: PlayerItem?
     private var isActive: Bool = false
 
-    var delegate: MBVideoPlayerControlsDelegate?
+    weak var delegate: MBVideoPlayerControlsDelegate?
     var videoPlayerHeader: MBVideoPlayerHeaderView?
     var configuration = MainConfiguration()
     var theme = MainTheme()
@@ -207,7 +214,9 @@ class MBVideoPlayerControls: UIView {
                 DispatchQueue.main.async {[weak self] in
                     guard let `self` = self else { return }
                     if newStatus == .playing || newStatus == .paused {
-                        self.delegate?.playerStateDidChange!((self.isActive ? MBVideoPlayerState.pause : MBVideoPlayerState.playing))
+                        if let player = self.delegate?.playerStateDidChange {
+                            player((self.isActive ? MBVideoPlayerState.pause : MBVideoPlayerState.playing))
+                        }
                         self.activityView.isHidden = true
                     } else {
                         self.activityView.isHidden = false
@@ -224,7 +233,9 @@ class MBVideoPlayerControls: UIView {
         let seekTime = CMTime(seconds: Double(sender.value) * totalDuration.asDouble, preferredTimescale: 100)
         playerTimeLabel.text = seekTime.description
         delegate?.seekToTime(seekTime)
-        delegate?.playerTimeDidChange!(seekTime.asDouble, totalDuration.asDouble)
+        if let player = delegate?.playerTimeDidChange {
+            player(seekTime.asDouble, totalDuration.asDouble)
+        }
     }
     
     @objc func clickPlayButton(_ sender: UIButton) {
@@ -246,7 +257,9 @@ class MBVideoPlayerControls: UIView {
         delegate?.seekToTime(time2)
         playerTimeLabel.text = time2.description
         seekSlider.value = time2.asFloat / totalDuration.asFloat
-        delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
+        if let player = delegate?.playerTimeDidChange {
+            player(time2.asDouble, totalDuration.asDouble)
+        }
     }
     
     @objc func clickForwardButton(_ sender: UIButton) {
@@ -259,12 +272,16 @@ class MBVideoPlayerControls: UIView {
             delegate?.seekToTime(time2)
             playerTimeLabel.text = time2.description
             seekSlider.value = time2.asFloat / totalDuration.asFloat
-            delegate?.playerTimeDidChange!(time2.asDouble, totalDuration.asDouble)
+            if let player = delegate?.playerTimeDidChange {
+                player(time2.asDouble, totalDuration.asDouble)
+            }
         }
     }
     
     @objc func resizeButtonTapped(_ sender:UIButton) {
-        delegate?.playerDidChangeSize!(configuration.dimension)
+        if let player = delegate?.playerDidChangeSize {
+            player(configuration.dimension)
+        }
 
         switch configuration.dimension {
         case .embed:
@@ -369,7 +386,9 @@ extension MBVideoPlayerControls: UICollectionViewDelegate, UICollectionViewDataS
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.playerDidSelectItem!(indexPath)
+        if let player = delegate?.playerDidSelectItem {
+            player(indexPath)
+        }
         if let url = URL(string: playerItems?[indexPath.row].url ?? "") {
           delegate?.loadVideo(url)
         }

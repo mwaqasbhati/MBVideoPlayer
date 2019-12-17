@@ -31,13 +31,13 @@ open class MBVideoPlayerView: UIView {
     private var isShowOverlay: Bool = true
     private var task: DispatchWorkItem? = nil
     private var queuePlayer: AVQueuePlayer!
-    private var playerLayer: AVPlayerLayer!
+    private var playerLayer: AVPlayerLayer?
 
     let overlayView = MBVideoPlayerControls()
-    var delegate: MBVideoPlayerViewDelegate?
+  //  var delegate: MBVideoPlayerViewDelegate?
     var configuration: MBConfiguration = MainConfiguration()
     var theme: MBTheme = MainTheme()
-    var mainContainerView: UIView?
+    var mainContainerView: UIView? = nil
             
     var totalDuration: CMTime? {
         return self.queuePlayer.currentItem?.asset.duration
@@ -77,16 +77,16 @@ open class MBVideoPlayerView: UIView {
     }
     override open func layoutSubviews() {
         super.layoutSubviews()
-        playerLayer.frame = self.bounds
+        playerLayer?.frame = self.bounds
         
     }
     // MARK: - Helper Methods
 
     func setPlayListItemsWith(delegate: MBVideoPlayerViewDelegate, currentItem: PlayerItem, items: [PlayerItem], fullView: UIView? = nil) {
         translatesAutoresizingMaskIntoConstraints = false
-        playerLayer.frame = self.bounds
+        playerLayer?.frame = self.bounds
         mainContainerView = fullView
-        self.delegate = delegate
+       // self.delegate = delegate
         addObservers()
         if let url = URL(string: currentItem.url) {
             loadVideo(url)
@@ -101,8 +101,8 @@ open class MBVideoPlayerView: UIView {
         if showOverlay {
             overlayView.createOverlayViewWith(configuration: configuration, theme: theme)
             overlayView.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(overlayView)
             overlayView.delegate = self
+            addSubview(overlayView)
             overlayView.backgroundColor = .clear
             overlayView.pinEdges(to: self)
         }
@@ -155,9 +155,9 @@ open class MBVideoPlayerView: UIView {
         queuePlayer = AVQueuePlayer()
         queuePlayer.addObserver(overlayView, forKeyPath: "timeControlStatus", options: [.old, .new], context: nil)
         playerLayer = AVPlayerLayer(player: queuePlayer)
-        playerLayer.backgroundColor = UIColor.black.cgColor
-        playerLayer.videoGravity = .resizeAspect
-        self.layer.addSublayer(playerLayer)
+        playerLayer?.backgroundColor = UIColor.black.cgColor
+        playerLayer?.videoGravity = .resizeAspect
+        self.layer.addSublayer(playerLayer!)
     }
     
 }
@@ -177,7 +177,9 @@ extension MBVideoPlayerView: MBVideoPlayerControlsDelegate {
         let playerItem = AVPlayerItem.init(url: url)
         queuePlayer.insert(playerItem, after: nil)
         overlayView.videoDidStart()
-        playerStateDidChange!(.readyToPlay)
+        if let player = playerStateDidChange {
+            player(.readyToPlay)
+        }
     }
     
     func seekToTime(_ seekTime: CMTime) {

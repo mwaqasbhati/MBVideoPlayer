@@ -10,9 +10,10 @@ import UIKit
 
 class ViewController: UIViewController, MBVideoPlayerViewDelegate {
 
-    let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
+    //let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
     
     @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -23,17 +24,17 @@ class ViewController: UIViewController, MBVideoPlayerViewDelegate {
                       "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8",
                       "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8"]
         
-        playerView.playerStateDidChange = { (state) in
+        videoPlayerView.playerStateDidChange = { (state) in
             
         }
-        playerView.playerOrientationDidChange = { (orientation) in
+        videoPlayerView.playerOrientationDidChange = { (orientation) in
         
         }
         let items = videos.map({ (video) -> PlayerItem in
             return PlayerItem(title: "Some Test Title", url: video, thumbnail: "")
         })
         if let item = items.first {
-            playerView.setPlayListItemsWith(delegate: self, currentItem: item, items: items, fullView: view)
+            videoPlayerView.setPlayListItemsWith(delegate: self, currentItem: item, items: items, fullView: view)
         }
     }
     

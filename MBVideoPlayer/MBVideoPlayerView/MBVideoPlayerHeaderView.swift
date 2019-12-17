@@ -81,6 +81,7 @@ class MBVideoPlayerHeaderView: UIView {
     }
     private func applyTheme(_ theme: MBTheme) {
         optionsButton.setImage(theme.optionsButtonImage, for: .normal)
+        optionsButton.tintColor = theme.buttonTintColor
         titleLabel.textColor = theme.playListCurrentItemTextColor
         titleLabel.font = theme.playListCurrentItemFont
     }
@@ -88,9 +89,15 @@ class MBVideoPlayerHeaderView: UIView {
         controlsStackView.addArrangedSubview(titleLabel)
     }
     private func addOptions() {
-        controlsStackView.addArrangedSubview(optionsButton)
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        controlsStackView.addArrangedSubview(view)
+        view.addSubview(optionsButton)
         optionsButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         optionsButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        optionsButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        optionsButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        optionsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     }
     @objc func optionsBtnPressed(_ sender: UIButton) {
         
