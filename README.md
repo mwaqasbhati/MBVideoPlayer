@@ -11,13 +11,13 @@
 
 ## Features
 
- > Support Both Horizontal and Vertical Orientation.
- > Custom Header view which in configurable.
- - Custom Theme which will control your player colors, fonts etc.
- - Custom Configuration which will control player settings.
- - Can be embedded within a view or be presented in full screen.
- - option to add custom playlist with title and thumbnail.
- - Include play, pause, forward, backward, fullscreen, timer and playlist functionalities.
+ - ✅ Support Both Horizontal and Vertical Orientation. 
+ - ✅ Custom Header view which in configurable.
+ - ✅ Custom Theme which will control your player colors, fonts etc.
+ - ✅ Custom Configuration which will control player settings.
+ - ✅ Can be embedded within a view or be presented in full screen.
+ - ✅ option to add custom playlist with title and thumbnail.
+ - ✅ Include play, pause, forward, backward, fullscreen, timer and playlist functionalities.
 
 ## Requirements
 
