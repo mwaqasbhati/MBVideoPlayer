@@ -36,10 +36,64 @@
 
 We can initialize it via Storyboard as well as from the code.
 
-1- Using StoryBoard
+#### Using StoryBoard
 
-2- Using Code
+- Create a Storyboard view and assign class `MBVideoPlayerView`
+- create storyboard outlet
+> @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+- call method `setPlayList` like we made using code.
 
+#### Using Code
+
+``` swift
+let playerItems = [
+            PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
+            PlayerItem(title: "Driving a Cycle experience.", url: "https://content.jwplatform.com/manifests/yp34SRmf.m3u8", thumbnail: "2"),
+            PlayerItem(title: "The Durian Open Movie Project.", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8", thumbnail: "3"),
+            PlayerItem(title: "Table Ronde.", url: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8", thumbnail: "4"),
+            PlayerItem(title: "What is this event? ... parker.", url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", thumbnail: "5")
+        ]
+ if let currentItem = playerItems.first {
+     playerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
+ }
+ view.addSubview(playerView)
+ playerView.pinEdges(to: view)
+ 
+```
+
+#### Listen to events using closure
+
+``` swift
+- Listen to
+playerView.playerStateDidChange = { (state) in
+            
+}
+
+playerView.playerOrientationDidChange = { (orientation) in
+        
+}
+
+playerView.playerDidChangeSize = { (dimension) in
+            
+}
+
+playerView.playerTimeDidChange = { (newTime, duration) in
+            
+}
+
+playerView.playerCellForItem = { () -> UICollectionViewCell in
+    return // subclass of UICollectionViewCell
+}
+
+playerView.playerDidSelectItem = { (index) in
+            
+}
+
+playerView.didSelectOptions = {
+            
+}
+
+```        
 
 ### Custom CallBacks
 
