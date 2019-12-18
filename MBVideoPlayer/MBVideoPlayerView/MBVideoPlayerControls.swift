@@ -95,31 +95,39 @@ class MBVideoPlayerControls: UIView {
         layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
         return collectionView
     }()
-    
+    /// PlayerItems that comes at the bottom as next playlist.
     private var playerItems: [PlayerItem]?
     
+    /// current video item which is playing now
     private var currentItem: PlayerItem?
     
+    /// this controls player state whether it's paused or playing
     private var isActive: Bool = false
 
     var delegate: MBVideoPlayerControlsDelegate?
     
+    /// custom header which comes as a default header
     var videoPlayerHeader: MBVideoPlayerHeaderView?
     
+    /// default configuration for player
     var configuration = MainConfiguration()
     
+    /// default theme for the player
     var theme = MainTheme()
     
+    /// all four constraints of the player from mainContainer which we are using to make it fullScreen
     private var topC: NSLayoutConstraint?
     private var bottomC: NSLayoutConstraint?
     private var rightC: NSLayoutConstraint?
     private var leftC: NSLayoutConstraint?
 
+    // default collectionviewcellid
     private var cellId = "videoCellId"
     
     // MARK: - View Initializers
@@ -132,23 +140,21 @@ class MBVideoPlayerControls: UIView {
         super.init(coder: coder)
     }
     
+    /**
+           This method assigns current video playing item and all the next items to respective views
+            - currentItem: current video which is playing
+            - items: all the next playlistitems
+     */
     func setPlayList(currentItem: PlayerItem, items: [PlayerItem]) {
-        
-        if let player = delegate?.playerDidRegisterCell {
-            let attributes = player()
-            collectionView.register(attributes.cell.self, forCellWithReuseIdentifier: attributes.cellIdentifier)
-        } else {
-            collectionView.register(VideoCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        }
         
         playerItems = items
         self.currentItem = currentItem
         collectionView.reloadData()
-        videoPlayerHeader?.setTitle(currentItem.title)
+        videoPlayerHeader?.setItem(currentItem)
         
     }
     
-    func createOverlayViewWith(configuration: MBConfiguration, theme: MBTheme) {
+    func createOverlayViewWith(configuration: MBConfiguration, theme: MBTheme, header: UIView?) {
         
         // activity indicator
         addSubview(activityView)
@@ -189,11 +195,12 @@ class MBVideoPlayerControls: UIView {
         }
 
         if configuration.canShowHeader {
-            videoPlayerHeader = MBVideoPlayerHeaderView(configuration: configuration, theme: theme, delegate: delegate)
-            addSubview(videoPlayerHeader!)
-            videoPlayerHeader!.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-            videoPlayerHeader!.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-            videoPlayerHeader!.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+            if header == nil {
+                videoPlayerHeader = MBVideoPlayerHeaderView(configuration: configuration, theme: theme, delegate: delegate)
+                setHeaderView(videoPlayerHeader!)
+            } else {
+                setHeaderView(header!)
+            }
         }
         
         applyTheme(theme)
@@ -214,6 +221,17 @@ class MBVideoPlayerControls: UIView {
         playButton.setImage((isActive ? theme.pauseButtonImage : theme.playButtonImage), for: .normal)
         forwardButton.setImage(theme.forwardButtonImage, for: .normal)
         backButton.setImage(theme.backButtonImage, for: .normal)
+    }
+    
+    private func setHeaderView(_ header: UIView) {
+        addSubview(header)
+        header.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+        header.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
+        header.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+    }
+    
+    func didRegisterPlayerItemCell(_ identifier: String, collectioViewCell cell: UICollectionViewCell.Type) {
+       collectionView.register(cell.self, forCellWithReuseIdentifier: identifier)
     }
     
     func videoDidStart() {
@@ -420,11 +438,11 @@ extension MBVideoPlayerControls: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let player = delegate?.playerDidSelectItem {
-            player(indexPath)
+            player(indexPath.row)
         }
-        if let url = URL(string: playerItems?[indexPath.row].url ?? ""), let title = playerItems?[indexPath.row].title {
+        if let item = playerItems?[indexPath.row], let url = URL(string: item.url) {
             delegate?.didLoadVideo(url)
-            videoPlayerHeader?.setTitle(title)
+            videoPlayerHeader?.setItem(item)
         }
     }
     

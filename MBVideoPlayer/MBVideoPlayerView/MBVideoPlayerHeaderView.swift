@@ -14,6 +14,7 @@ class MBVideoPlayerHeaderView: UIView {
     var configuration: MBConfiguration
     var theme: MBTheme
     var delegate: MBVideoPlayerControlsDelegate?
+    var item: PlayerItem?
 
     lazy private var titleLabel: UILabel = {
         let label = UILabel()
@@ -61,8 +62,9 @@ class MBVideoPlayerHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setTitle(_ title: String) {
-        titleLabel.text = title
+    func setItem(_ currentItem: PlayerItem) {
+        item = currentItem
+        titleLabel.text = currentItem.title
     }
     
     private func createHeaderView() {
@@ -111,8 +113,8 @@ class MBVideoPlayerHeaderView: UIView {
     }
     
     @objc func optionsBtnPressed(_ sender: UIButton) {
-        if let player = delegate?.didSelectOptions {
-            player()
+        if let player = delegate?.didSelectOptions, let item = item {
+            player(item)
         }
     }
     

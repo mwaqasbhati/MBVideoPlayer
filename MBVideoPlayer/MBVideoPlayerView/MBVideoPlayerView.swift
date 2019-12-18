@@ -31,14 +31,12 @@ open class MBVideoPlayerView: UIView {
     var playerOrientationDidChange: ((PlayerDimension) -> ())? = nil
     
     var playerDidChangeSize: ((PlayerDimension) -> ())? = nil
-    
-    var playerDidRegisterCell: (()->(cellIdentifier: String, cell: UICollectionViewCell.Type))? = nil
-    
+        
     var playerCellForItem: ((UICollectionView, IndexPath)->(UICollectionViewCell))? = nil
     
-    var playerDidSelectItem: ((IndexPath)->())? = nil
+    var playerDidSelectItem: ((Int)->())? = nil
     
-    var didSelectOptions: (() -> ())? = nil
+    var didSelectOptions: ((PlayerItem) -> ())? = nil
     
     // MARK: - Instance Variables
     
@@ -75,7 +73,7 @@ open class MBVideoPlayerView: UIView {
     
     // MARK: - View Initializers
     
-    required public init(configuration: MBConfiguration?, theme: MBTheme?) {
+    required public init(configuration: MBConfiguration?, theme: MBTheme?, header: UIView?) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         if let theme = theme {
@@ -84,18 +82,18 @@ open class MBVideoPlayerView: UIView {
         if let configuration = configuration {
             self.configuration = configuration
         }
-        setupPlayer()
+        setupPlayer(header)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         translatesAutoresizingMaskIntoConstraints = false
-        setupPlayer()
+        setupPlayer(nil)
     }
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        setupPlayer()
+        setupPlayer(nil)
     }
     
     override open func layoutSubviews() {
@@ -105,7 +103,11 @@ open class MBVideoPlayerView: UIView {
     }
     
     // MARK: - Helper Methods
-
+    
+    func didRegisterPlayerItemCell(_ identifier: String, collectioViewCell cell: UICollectionViewCell.Type) {
+        overlayView.didRegisterPlayerItemCell(identifier, collectioViewCell: cell)
+    }
+    
     func setPlayList(currentItem: PlayerItem, items: [PlayerItem], fullScreenView: UIView? = nil) {
         
         //playerLayer?.frame = self.bounds
@@ -119,7 +121,7 @@ open class MBVideoPlayerView: UIView {
         overlayView.setPlayList(currentItem: currentItem, items: items)
     }
     
-    private func setupPlayer() {
+    private func setupPlayer(_ header: UIView?) {
         
         // setup avQueuePlayer
         
@@ -127,7 +129,7 @@ open class MBVideoPlayerView: UIView {
         
         // setup overlay
         
-        createOverlay()
+        createOverlay(header)
                 
         // background view as a dim view having alphs 0.3
         
@@ -201,11 +203,11 @@ open class MBVideoPlayerView: UIView {
     
     /// this create overlay view on top of player with custom controls
     
-    private func createOverlay() {
+    private func createOverlay(_ header: UIView?) {
         
         guard configuration.isShowOverlay else { return }
         overlayView.delegate = self
-        overlayView.createOverlayViewWith(configuration: configuration, theme: theme)
+        overlayView.createOverlayViewWith(configuration: configuration, theme: theme, header: header)
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(overlayView)
         overlayView.backgroundColor = .clear

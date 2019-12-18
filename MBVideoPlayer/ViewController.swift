@@ -16,12 +16,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme())
+        let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
 
-        playerView.playerDidRegisterCell = { () -> (cellIdentifier: String, cell: UICollectionViewCell.Type) in
-            return ("videoCellId", VideoCollectionViewCell.self)
-        }
-        
         let playerItems = [
             PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
             PlayerItem(title: "Driving a Cycle experience.", url: "https://content.jwplatform.com/manifests/yp34SRmf.m3u8", thumbnail: "2"),
@@ -29,10 +25,15 @@ class ViewController: UIViewController {
             PlayerItem(title: "Table Ronde.", url: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8", thumbnail: "4"),
             PlayerItem(title: "What is this event? ... parker.", url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", thumbnail: "5")
         ]
+        
         if let currentItem = playerItems.first {
             playerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
         }
+        
+        playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
+        
         view.addSubview(playerView)
+        
         playerView.pinEdges(to: view)
         
         playerView.playerStateDidChange = { (state) in
@@ -48,14 +49,14 @@ class ViewController: UIViewController {
             
         }
         playerView.playerCellForItem = { (collectioView, indexPath) -> UICollectionViewCell in
-            let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId", for: indexPath) as! VideoCollectionViewCell
+            let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId1", for: indexPath) as! VideoCollectionViewCell
             cell.setData(playerItems[indexPath.row])
             return cell
         }
         playerView.playerDidSelectItem = { (index) in
             
         }
-        playerView.didSelectOptions = {
+        playerView.didSelectOptions = { (index) in
             
         }
         
