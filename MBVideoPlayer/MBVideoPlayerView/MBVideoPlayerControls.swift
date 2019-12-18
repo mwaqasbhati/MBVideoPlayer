@@ -76,7 +76,7 @@ class MBVideoPlayerControls: UIView {
     
     lazy private var playListStackView: UIStackView = {
         let stackView = UIStackView()
-        stackView.isHidden = true
+       // stackView.isHidden = true
         stackView.axis = .horizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
@@ -324,7 +324,7 @@ class MBVideoPlayerControls: UIView {
         switch configuration.dimension {
         case .embed:
             if let _ = delegate?.fullScreenView?.bounds {
-                playListStackView.isHidden = false
+             //   playListStackView.isHidden = false
                 if let view = delegate?.fullScreenView {
                    leftC = delegate?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = delegate?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -343,7 +343,7 @@ class MBVideoPlayerControls: UIView {
                 NSLayoutConstraint.deactivate([leftC, rightC, topC, bottomC])
                 layoutIfNeeded()
                 resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
-                playListStackView.isHidden = true
+              //  playListStackView.isHidden = true
             }
             configuration.dimension = .embed
         }

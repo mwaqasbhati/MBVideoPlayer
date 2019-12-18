@@ -10,13 +10,13 @@ import UIKit
 
 class ViewController: UIViewController {
     
-   // @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+    @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
+       // let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
 
         let playerItems = [
             PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
@@ -27,9 +27,9 @@ class ViewController: UIViewController {
         ]
         
         if let currentItem = playerItems.first {
-            playerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
+            videoPlayerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
         }
-        
+        /*
         playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
         
         view.addSubview(playerView)
@@ -59,7 +59,7 @@ class ViewController: UIViewController {
         playerView.didSelectOptions = { (index) in
             
         }
-        
+        */
     }
         
 }
