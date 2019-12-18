@@ -100,11 +100,11 @@ playerView.didSelectOptions = {
 
 If you want to use default header then pass nil while initializing
 ```swift
- let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
+let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
 ``` 
 If you want to use custom header then pass your desired header view while initializing
 ```swift
-> let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: CustomView())
+let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: CustomView())
 ```
 ### Custom PlayList Items Cell
 
