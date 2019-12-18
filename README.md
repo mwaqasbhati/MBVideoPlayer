@@ -40,7 +40,9 @@ We can initialize it via Storyboard as well as from the code.
 
 - Create a Storyboard view and assign class `MBVideoPlayerView`
 - create storyboard outlet
-> @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+```swift
+@IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+```
 - call method `setPlayList` like we made using code.
 
 #### Using Code
@@ -61,40 +63,67 @@ let playerItems = [
  
 ```
 
-#### Listen to events using closure
+### Listen to events using closure
 
 ``` swift
-- Listen to
+// Listen to player state
 playerView.playerStateDidChange = { (state) in
             
 }
-
+// Listen to player orientation
 playerView.playerOrientationDidChange = { (orientation) in
         
 }
-
+// Listen to player size whether it's embeded or fullScreen
 playerView.playerDidChangeSize = { (dimension) in
             
 }
-
+// Listen to player time change via slider or forward/backward button
 playerView.playerTimeDidChange = { (newTime, duration) in
             
 }
-
+// For customization of PlayListItems here we will pass `UICollectionViewCell` which will represent each playlistitem
 playerView.playerCellForItem = { () -> UICollectionViewCell in
     return // subclass of UICollectionViewCell
 }
-
+// Called when we click on playlistitem and give you selected index
 playerView.playerDidSelectItem = { (index) in
             
 }
-
+// Called when we click on options button which in on the header to show different options to user
 playerView.didSelectOptions = {
             
 }
 
 ```        
+### Custom Header
 
+If you want to use default header then pass nil while initializing
+```swift
+let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
+``` 
+If you want to use custom header then pass your desired header view while initializing
+```swift
+let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: CustomView())
+```
+### Custom PlayList Items Cell
+
+If you want to customize playlistitem cell then you have to do below two things
+```swift
+//1:
+// videoCellId: it is the resuable identifier for the cell
+// collectioViewCell: it is subclass of UICollectionViewCell
+playerView.didRegisterPlayerItemCell("videoCellId", collectioViewCell: VideoCollectionViewCell.self)
+
+//2:
+// you have to provide your cell and fill it with data.
+playerView.playerCellForItem = { (collectioView, indexPath) -> UICollectionViewCell in
+   
+   let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId1", for: indexPath) as! VideoCollectionViewCell
+   cell.setData(playerItems[indexPath.row])
+   return cell
+}
+```
 ### Custom CallBacks
 
 ```swift
