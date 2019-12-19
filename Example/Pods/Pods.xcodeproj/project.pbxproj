@@ -10,7 +10,6 @@
 		0BC2E8B0077F90CF0AA35F2ACEAAA4EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
 		11F9D5F94E1C45E22F772B88CFF46FA9 /* Pods-MBVideoPlayer_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C40E07D3C7420CE8FC05930A23933DF /* Pods-MBVideoPlayer_Tests-dummy.m */; };
 		1203D3A78228A061181B4CB172F66D63 /* Pods-MBVideoPlayer_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D47A390FBF900BE08E169D4E39A58615 /* Pods-MBVideoPlayer_Example-dummy.m */; };
-		1E4CCFD9C941A77D33207DB92BD5A219 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069C2A92E16BBB2393B9EA38D91AD362 /* ReplaceMe.swift */; };
 		469858DC23ABA8BD00E8A648 /* MBVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469858D323ABA8BC00E8A648 /* MBVideoPlayerView.swift */; };
 		469858DD23ABA8BD00E8A648 /* MBVideoPlayerDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469858D423ABA8BC00E8A648 /* MBVideoPlayerDelegates.swift */; };
 		469858DE23ABA8BD00E8A648 /* VideoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469858D523ABA8BC00E8A648 /* VideoCollectionViewCell.swift */; };
@@ -47,7 +46,6 @@
 
 /* Begin PBXFileReference section */
 		03ABC01BB41F02353E2CF00BA4731727 /* Pods-MBVideoPlayer_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MBVideoPlayer_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
-		069C2A92E16BBB2393B9EA38D91AD362 /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = MBVideoPlayer/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
 		0C40E07D3C7420CE8FC05930A23933DF /* Pods-MBVideoPlayer_Tests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MBVideoPlayer_Tests-dummy.m"; sourceTree = "<group>"; };
 		169EF5C6C0C006510191B150F347EFDC /* Pods-MBVideoPlayer_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MBVideoPlayer_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		2F8836C1CA4C15EAF96942F65BDB4B10 /* Pods-MBVideoPlayer_Tests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MBVideoPlayer_Tests-Info.plist"; sourceTree = "<group>"; };
@@ -138,7 +136,6 @@
 				469858D323ABA8BC00E8A648 /* MBVideoPlayerView.swift */,
 				469858D923ABA8BD00E8A648 /* PlayerItem.swift */,
 				469858D523ABA8BC00E8A648 /* VideoCollectionViewCell.swift */,
-				069C2A92E16BBB2393B9EA38D91AD362 /* ReplaceMe.swift */,
 				AA39C7D2B5DE1F938181E3C10FA1AC70 /* Pod */,
 				EFFF774E4D671D2CC11E82C28DBCB76E /* Support Files */,
 			);
@@ -402,7 +399,6 @@
 				469858E023ABA8BD00E8A648 /* MBVideoPlayerHeaderView.swift in Sources */,
 				469858DF23ABA8BD00E8A648 /* MBVideoPlayerControls.swift in Sources */,
 				469858DE23ABA8BD00E8A648 /* VideoCollectionViewCell.swift in Sources */,
-				1E4CCFD9C941A77D33207DB92BD5A219 /* ReplaceMe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -257,7 +257,7 @@ extension MBVideoPlayerView: UIGestureRecognizerDelegate {
 // MARK: MBVideoPlayerControlsDelegate
 
 extension UIView {
-    func pinEdges(to other: UIView) {
+    public func pinEdges(to other: UIView) {
         leadingAnchor.constraint(equalTo: other.leadingAnchor).isActive = true
         trailingAnchor.constraint(equalTo: other.trailingAnchor).isActive = true
         topAnchor.constraint(equalTo: other.topAnchor).isActive = true

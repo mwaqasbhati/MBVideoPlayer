@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        _ = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
+        let playerView = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
 
         let playerItems = [
             PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
@@ -30,8 +30,8 @@ class ViewController: UIViewController {
         if let currentItem = playerItems.first {
             videoPlayerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
         }
-        /*
-        playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
+        
+       // playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
         
         view.addSubview(playerView)
         
@@ -49,14 +49,14 @@ class ViewController: UIViewController {
         playerView.playerTimeDidChange = { (newTime, duration) in
             
         }
-        playerView.playerCellForItem = { (collectioView, indexPath) -> UICollectionViewCell in
-            let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId1", for: indexPath) as! VideoCollectionViewCell
-            cell.setData(playerItems[indexPath.row])
-            return cell
-        }
+//        playerView.playerCellForItem = { (collectioView, indexPath) -> UICollectionViewCell in
+//            let cell = collectioView.dequeueReusableCell(withReuseIdentifier: "videoCellId1", for: indexPath) as! VideoCollectionViewCell
+//            cell.setData(playerItems[indexPath.row])
+//            return cell
+//        }
         playerView.playerDidSelectItem = { (index) in
             
-        }*/
+        }
         videoPlayerView.didSelectOptions = { (index) in
             let controller = UIAlertController(title: "Options", message: "select below options", preferredStyle: .actionSheet)
             let action1 = UIAlertAction(title: "Save video", style: .default) { (action) in

@@ -19,6 +19,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+    
     let titleLabel: UILabel = {
        let label = UILabel()
        label.translatesAutoresizingMaskIntoConstraints = false
@@ -27,6 +28,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
        label.numberOfLines = 1
        return label
     }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -38,8 +40,9 @@ class VideoCollectionViewCell: UICollectionViewCell {
     
     func setupUI() {
         addSubview(videoThumbnail)
-        videoThumbnail.pinEdges(to: self)
         addSubview(titleLabel)
+        
+        videoThumbnail.pinEdges(to: self)
         titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
         titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 5).isActive = true

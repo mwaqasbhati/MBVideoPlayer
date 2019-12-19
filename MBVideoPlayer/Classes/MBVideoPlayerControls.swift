@@ -16,21 +16,21 @@ class MBVideoPlayerControls: UIView {
     
     // MARK: - Instance Variables
 
-    lazy private var playButton: UIButton! = {
+    lazy private var playButton: UIButton = {
        let playButton = UIButton()
         playButton.translatesAutoresizingMaskIntoConstraints = false
         playButton.addTarget(self, action: #selector(self.clickPlayButton(_:)), for: .touchUpInside)
         return playButton
     }()
     
-    lazy private var backButton: UIButton! = {
+    lazy private var backButton: UIButton = {
         let backwardButton = UIButton()
         backwardButton.translatesAutoresizingMaskIntoConstraints = false
         backwardButton.addTarget(self, action: #selector(self.clickBackButton(_:)), for: .touchUpInside)
         return backwardButton
     }()
     
-    lazy private var forwardButton: UIButton! = {
+    lazy private var forwardButton: UIButton = {
        let forwardButton = UIButton()
         forwardButton.translatesAutoresizingMaskIntoConstraints = false
         forwardButton.addTarget(self, action: #selector(self.clickForwardButton(_:)), for: .touchUpInside)
@@ -289,6 +289,9 @@ class MBVideoPlayerControls: UIView {
         playButton.setImage(Controls.playpause(isActive).image, for: .normal)
         delegate?.playPause(isActive)
         print("clicked -> \(isActive)")
+        if let player = delegate?.playerStateDidChange {
+            player((isActive == true ? .playing : .pause))
+        }
     }
     
     @objc func clickBackButton(_ sender: UIButton) {
@@ -332,7 +335,6 @@ class MBVideoPlayerControls: UIView {
         switch configuration.dimension {
         case .embed:
             if let _ = delegate?.fullScreenView?.bounds {
-             //   playListStackView.isHidden = false
                 if let view = delegate?.fullScreenView {
                    leftC = delegate?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = delegate?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -351,7 +353,6 @@ class MBVideoPlayerControls: UIView {
                 NSLayoutConstraint.deactivate([leftC, rightC, topC, bottomC])
                 layoutIfNeeded()
                 resizeButton.setImage(Controls.resize(configuration.dimension).image, for: .normal)
-              //  playListStackView.isHidden = true
             }
             configuration.dimension = .embed
         }
