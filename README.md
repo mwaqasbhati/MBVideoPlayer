@@ -6,13 +6,22 @@
 [![Platform](https://img.shields.io/cocoapods/p/MBVideoPlayer.svg?style=flat)](https://cocoapods.org/pods/MBVideoPlayer)
 
 
+A video player on top of AVQueuePlayer with custom header, playlist items, play, pause, seek to slider, time, resize to fullscreen, forward, backward horizontal, vertical capabilities.
+
+<p align="center">
+  <img width="70%" height="75%" src="/screenshots/fullscreen.png">
+</p>
+
+
 ## Contents
+
 - [Features](#features)
 - [Requirements](#requirements)
+- [Example](#example)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Tips](#tips)
-- [Contact us](#contact-us)
+- [Demo](#demo)
+- [Author](#author)
 - [License](#license)
 
 ## Features
@@ -53,9 +62,29 @@ pod 'MBVideoPlayer', :git => 'https://github.com/mwaqasbhati/MBVideoPlayer.git'
 We can initialize it via Storyboard as well as from the code.
 
 1- Using StoryBoard
-
+First of all assign class `MBVideoPlayer` to UIView in Storyboard and then make an out of it. 
+    `@IBOutlet weak var videoPlayerView: MBVideoPlayerView!`
+then create playlist using below code.
 2- Using Code
 
+```swift
+let playerView = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
+
+        let playerItems = [
+            PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
+            PlayerItem(title: "Driving a Cycle experience.", url: "https://content.jwplatform.com/manifests/yp34SRmf.m3u8", thumbnail: "2"),
+            PlayerItem(title: "The Durian Open Movie Project.", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8", thumbnail: "3"),
+            PlayerItem(title: "Table Ronde.", url: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8", thumbnail: "4"),
+            PlayerItem(title: "What is this event? ... parker.", url: "https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8", thumbnail: "5")
+        ]
+        
+        if let currentItem = playerItems.first {
+            videoPlayerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
+        }
+                
+        view.addSubview(playerView)
+        playerView.pinEdges(to: view)
+```
 
 ### Custom CallBacks
 
@@ -112,6 +141,11 @@ public protocol MBTheme {
     var optionsButtonImage: UIImage! { get }
 }
 ```
+## Demo
+
+<p align="center">
+  <img width="30%" height="30%" src="/screenshots/demo.gif">
+</p>
 
 ## Author
 
