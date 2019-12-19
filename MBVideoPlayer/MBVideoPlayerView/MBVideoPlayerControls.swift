@@ -89,6 +89,14 @@ class MBVideoPlayerControls: UIView {
        return stackView
     }()
     
+    private lazy var backgroundView: UIView = {
+       let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.black
+        view.alpha = 0.3
+        return view
+    }()
+    
     private lazy var collectionView: UICollectionView =  {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 100, height: 100)
@@ -399,8 +407,12 @@ class MBVideoPlayerControls: UIView {
     }
     
     private func addPlayList() {
-        // videos stackview
+        // background view
+        addSubview(backgroundView)
         addSubview(playListStackView)
+
+        backgroundView.pinEdges(to: playListStackView)
+        // videos stackview
         playListStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         playListStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         playListStackView.bottomAnchor.constraint(equalTo: self.seekSlider.topAnchor, constant: -10.0).isActive = true

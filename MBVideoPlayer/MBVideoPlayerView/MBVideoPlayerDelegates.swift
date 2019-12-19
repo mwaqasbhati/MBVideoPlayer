@@ -40,7 +40,6 @@ protocol MBVideoPlayerControlsDelegate where Self: UIView {
     var playerOrientationDidChange: ((_ dimension: PlayerDimension) -> ())? {get set}
     var playerDidChangeSize: ((PlayerDimension) -> ())? {get set}
     var playerCellForItem: ((UICollectionView, IndexPath)->(UICollectionViewCell))? {get set}
-  //  var playerDidRegisterCell: (()->(cellIdentifier: String, cell: UICollectionViewCell.Type))? {get set}
     var playerDidSelectItem: ((Int)->())? {get set}
     var didSelectOptions: ((PlayerItem) -> ())? { get set }
     

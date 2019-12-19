@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-       // let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
+        let playerView = MBVideoPlayerView(configuration: MainConfiguration(), theme: MainTheme(), header: nil)
 
         let playerItems = [
             PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
@@ -55,11 +55,29 @@ class ViewController: UIViewController {
         }
         playerView.playerDidSelectItem = { (index) in
             
-        }
-        playerView.didSelectOptions = { (index) in
+        }*/
+        videoPlayerView.didSelectOptions = { (index) in
+            let controller = UIAlertController(title: "Options", message: "select below options", preferredStyle: .actionSheet)
+            let action1 = UIAlertAction(title: "Save video", style: .default) { (action) in
+                
+            }
+            let action2 = UIAlertAction(title: "Mark as spam", style: .default) { (action) in
+                
+            }
+            let action3 = UIAlertAction(title: "Delete video", style: .default) { (action) in
+                
+            }
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+                
+            }
+            controller.addAction(action1)
+            controller.addAction(action2)
+            controller.addAction(action3)
+            controller.addAction(cancel)
+            self.present(controller, animated: true, completion: nil)
             
         }
-        */
+        
     }
         
 }

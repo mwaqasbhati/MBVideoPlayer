@@ -15,7 +15,7 @@ class VideoCollectionViewCell: UICollectionViewCell {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 10.0
         imageView.contentMode = .scaleAspectFill
-        imageView.alpha = 0.8
+      //  imageView.alpha = 0.8
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
