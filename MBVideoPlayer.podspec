@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MBVideoPlayer'
-  s.version          = '0.1.0'
-  s.summary          = 'A video player on top of AVQueuePlayer with custom header, playlist items, play, pause, seek to slider, time, resize to fullscreen, forward, backward horizontal, vertical capabilities.'
+  s.version          = '0.1.1'
+  s.summary          = 'A video player on top of AVQueuePlayer.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
