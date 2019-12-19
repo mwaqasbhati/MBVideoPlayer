@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MBVideoPlayer_Example' do
+  pod 'MBVideoPlayer', :path => '../'
+
+  target 'MBVideoPlayer_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

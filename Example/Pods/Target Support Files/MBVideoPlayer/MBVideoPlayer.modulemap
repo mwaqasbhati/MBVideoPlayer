@@ -1,0 +1,6 @@
+framework module MBVideoPlayer {
+  umbrella header "MBVideoPlayer-umbrella.h"
+
+  export *
+  module * { export * }
+}

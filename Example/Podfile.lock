@@ -1,0 +1,16 @@
+PODS:
+  - MBVideoPlayer (0.1.0)
+
+DEPENDENCIES:
+  - MBVideoPlayer (from `../`)
+
+EXTERNAL SOURCES:
+  MBVideoPlayer:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  MBVideoPlayer: 8b2eab235b443396b635840dff81eccab19b8cea
+
+PODFILE CHECKSUM: e41524e5229b5ee8f797db7760e73bc373dd9bfc
+
+COCOAPODS: 1.8.4

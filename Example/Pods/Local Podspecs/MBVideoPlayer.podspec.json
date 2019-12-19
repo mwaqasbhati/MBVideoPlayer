@@ -1,0 +1,22 @@
+{
+  "name": "MBVideoPlayer",
+  "version": "0.1.0",
+  "summary": "A short description of MBVideoPlayer.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/mwaqasbhati/MBVideoPlayer",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "mwaqasbhati": "MBhati.avenir@emaar.ae"
+  },
+  "source": {
+    "git": "https://github.com/mwaqasbhati/MBVideoPlayer.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "MBVideoPlayer/Classes/**/*"
+}
