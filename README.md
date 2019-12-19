@@ -2,6 +2,9 @@
 
 A video player on top of AVQueuePlayer with custom header, playlist items, play, pause, seek to slider, time, resize to fullscreen, forward, backward horizontal, vertical capabilities.
 
+|![Demo](https://github.com/mwaqasbhati/MBVideoPlayer/blob/master/screenshots/fullscreen.png)|
+
+
 ## Contents
 - [Features](#features)
 - [Requirements](#requirements)
