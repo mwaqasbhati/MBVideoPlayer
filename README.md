@@ -9,7 +9,7 @@
 A video player on top of AVQueuePlayer with custom header, playlist items, play, pause, seek to slider, time, resize to fullscreen, forward, backward horizontal, vertical capabilities.
 
 <p align="center">
-  <img width="70%" height="75%" src="/screenshots/fullscreen.png">
+  <img width="80%" height="100%" src="/screenshots/fullscreen.png">
 </p>
 
 
