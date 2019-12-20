@@ -21,7 +21,7 @@ A video player on top of AVQueuePlayer with custom header, playlist items, play,
 - [Installation](#installation)
 - [Usage](#usage)
 - [Demo](#demo)
-- [Author](#author)
+- [Contact](#contact)
 - [License](#license)
 
 ## Features
@@ -149,9 +149,10 @@ public protocol MBTheme {
   <img width="30%" height="30%" src="/screenshots/demo.gif">
 </p>
 
-## Author
+## Contact
 
 mwaqasbhati, m.waqas.bhati@hotmail.com
+Medium Blog: https://medium.com/@wqsbhtt/mbvideoplayer-2ec2bf292574
 
 ## License
 
