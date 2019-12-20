@@ -152,6 +152,7 @@ public protocol MBTheme {
 ## Contact
 
 mwaqasbhati, m.waqas.bhati@hotmail.com
+
 Medium Blog: https://medium.com/@wqsbhtt/mbvideoplayer-2ec2bf292574
 
 ## License
