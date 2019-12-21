@@ -16,6 +16,7 @@ A video player on top of AVQueuePlayer with custom header, playlist items, play,
 - [Usage](#usage)
 - [Demo](#demo)
 - [Contact](#contact)
+- [Contribution](#contribution)
 - [License](#license)
 
 ## Features
@@ -145,9 +146,21 @@ public protocol MBTheme {
 
 ## Contact
 
-m.waqas.bhati@hotmail.com
+Email: m.waqas.bhati@hotmail.com
 
 Blog: https://medium.com/@wqsbhtt/mbvideoplayer-2ec2bf292574
+
+## Contribution
+
+1- Fork it!
+
+2- Create your feature branch: git checkout -b my-new-feature
+
+3- Commit your changes: git commit -am 'Add some feature'
+
+4- Push to the branch: git push origin my-new-feature
+
+5- Submit a pull request
 
 ## License
 
