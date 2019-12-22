@@ -56,13 +56,13 @@ pod 'MBVideoPlayer', :git => 'https://github.com/mwaqasbhati/MBVideoPlayer.git'
 
 We can initialize it via Storyboard as well as from the code.
 
-1- Using StoryBoard
+### Using StoryBoard
 
 First of all assign class `MBVideoPlayer` to UIView in Storyboard and then make an out of it. 
     `@IBOutlet weak var videoPlayerView: MBVideoPlayerView!`
 then create playlist using below code.
 
-2- Using Code
+### Using Code
 
 ```swift
 let playerView = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
