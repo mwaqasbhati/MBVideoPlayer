@@ -28,7 +28,7 @@ class ViewController: UIViewController {
         ]
         
         if let currentItem = playerItems.first {
-            videoPlayerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
+            playerView.setPlayList(currentItem: currentItem, items: playerItems, fullScreenView: view)
         }
         
        // playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
@@ -57,7 +57,7 @@ class ViewController: UIViewController {
         playerView.playerDidSelectItem = { (index) in
             
         }
-        videoPlayerView.didSelectOptions = { (index) in
+        playerView.didSelectOptions = { (index) in
             let controller = UIAlertController(title: "Options", message: "select below options", preferredStyle: .actionSheet)
             let action1 = UIAlertAction(title: "Save video", style: .default) { (action) in
                 
