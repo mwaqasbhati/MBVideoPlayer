@@ -215,6 +215,10 @@ open class MBVideoPlayerView: UIView {
         
     }
     
+    public func toggleScreen() {
+        overlayView.resizeButtonTapped(UIButton())
+    }
+    
 }
 
 // MARK: MBVideoPlayerControlsDelegate

@@ -11,13 +11,23 @@ import MBVideoPlayer
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var videoPlayerView: MBVideoPlayerView!
+    @IBOutlet weak var containerView: UIView!
+    
+    let playerView = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
+
+    lazy var toggleButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Switch", for: .normal)
+        btn.translatesAutoresizingMaskIntoConstraints = false
+       // button.addTarget(self, action: #selector(self.optionsBtnPressed(_:)), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(self.toggleScreen(_:)), for: .touchUpInside)
+        return btn
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        let playerView = MBVideoPlayerView(configuration: nil, theme: nil, header: nil)
 
         let playerItems = [
             PlayerItem(title: "Apple Live Broadcast WWDC.", url: "http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8", thumbnail: "1"),
@@ -34,8 +44,17 @@ class ViewController: UIViewController {
        // playerView.didRegisterPlayerItemCell("videoCellId1", collectioViewCell: VideoCollectionViewCell.self)
         
         view.addSubview(playerView)
+       // view.addSubview(toggleButton)
+      //  toggleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+      //  toggleButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 40).isActive = true
+      //  toggleButton.bringSubviewToFront(view)
         
-        playerView.pinEdges(to: view)
+        playerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        playerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        playerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        playerView.heightAnchor.constraint(equalToConstant: view.frame.size.height/2).isActive = true
+        
+       // playerView.pinEdges(to: view)
         
         playerView.playerStateDidChange = { (state) in
             
@@ -80,6 +99,14 @@ class ViewController: UIViewController {
         }
         
     }
+    
+     @objc func toggleScreen(_ sender: UIButton) {
+       // if let video = playerView {
+            playerView.toggleScreen()
+       // }
+     }
+    
+    
         
 }
 

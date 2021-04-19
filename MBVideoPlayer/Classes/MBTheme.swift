@@ -35,7 +35,7 @@ public protocol MBTheme {
 public struct MainTheme: MBTheme {
     public var headerBackgroundOpacity: Float = 0.3
     public var buttonTintColor: UIColor = .white
-    public var headerBackgroundColor: UIColor = .black
+    public var headerBackgroundColor: UIColor = .gray
     public var playListCurrentItemTextColor: UIColor = .white
     public var playListItemsTextColor: UIColor = .white
     public var timeLabelTextColor: UIColor = .white
