@@ -74,7 +74,6 @@ class MBVideoPlayerHeaderView: UIView {
         
         addSubview(backgroundView)
         addSubview(controlsStackView)
-        
         backgroundView.pinEdges(to: controlsStackView)
         controlsStackView.pinEdges(to: self)
         controlsStackView.heightAnchor.constraint(equalToConstant: 50.0).isActive = true
@@ -94,6 +93,7 @@ class MBVideoPlayerHeaderView: UIView {
         optionsButton.tintColor = theme.buttonTintColor
         titleLabel.textColor = theme.playListCurrentItemTextColor
         titleLabel.font = theme.playListCurrentItemFont
+        backgroundView.backgroundColor = theme.headerBackgroundColor
     }
     
     private func addTitleLabel() {

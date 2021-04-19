@@ -235,7 +235,7 @@ class MBVideoPlayerControls: UIView {
         addSubview(header)
         header.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
         header.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-        header.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+        header.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
     }
     
     func didRegisterPlayerItemCell(_ identifier: String, collectioViewCell cell: UICollectionViewCell.Type) {
