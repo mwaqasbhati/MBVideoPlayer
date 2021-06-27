@@ -338,8 +338,8 @@ class MBVideoPlayerControls: UIView {
                 if let view = delegate?.fullScreenView {
                    leftC = delegate?.leadingAnchor.constraint(equalTo: view.leadingAnchor)
                    rightC = delegate?.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-                   topC = delegate?.topAnchor.constraint(equalTo: view.topAnchor)
-                   bottomC = delegate?.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                   topC = delegate?.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+                   bottomC = delegate?.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
                     if let leftC = leftC, let rightC = rightC, let bottomC = bottomC, let topC = topC {
                         NSLayoutConstraint.activate([leftC, rightC, topC, bottomC])
                         layoutIfNeeded()
