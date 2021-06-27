@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         playerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         playerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         playerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        playerView.heightAnchor.constraint(equalToConstant: view.frame.size.height/2).isActive = true
+        playerView.heightAnchor.constraint(equalToConstant: view.frame.size.width - 10).isActive = true
         
        // playerView.pinEdges(to: view)
         
