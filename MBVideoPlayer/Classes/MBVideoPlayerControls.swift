@@ -250,6 +250,8 @@ class MBVideoPlayerControls: UIView {
     
     func videoDidChange(_ time: CMTime) {
         playerTimeLabel.text = time.description
+        guard let totalDuration = delegate?.totalDuration, isActive else { return }
+        seekSlider.value = Float(time.asDouble/totalDuration.asDouble)
     }
     
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
